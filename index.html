@@ -681,7 +681,7 @@ function summaryText(){const ids=[...st.short].filter(id=>byId[id]).sort((a,b)=>
     return (i+1)+". "+s.n+(parts.length?" ("+parts.join(", ")+")":"")}).join("\n");}
 async function shareList(){const me=await askName();if(!me)return;
   const url=location.origin+location.pathname+"#d="+await packShare(myPayload());
-  const text=summaryText()+"\n\nOpen mijn lijst in de app (je kunt hem samenvoegen met de jouwe):";
+  const text=summaryText()+"\n\nOpen mijn lijst via de link om hem met de jouwe samen te voegen.";
   if(navigator.share){try{await navigator.share({title:"Shortlist middelbare scholen",text,url});return}catch(e){if(e.name==="AbortError")return}}
   const full=text+"\n"+url;
   try{await navigator.clipboard.writeText(full);modal('<h3>Gekopieerd</h3><p>Het bericht met de link staat op je klembord. Plak het in WhatsApp of een mail.</p><div class="row"><button class="btn primary" onclick="this.closest(\'.modal\').remove()">Oké</button></div>')}
