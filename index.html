@@ -99,6 +99,14 @@ section.view{padding:20px 0 120px}
 .pnote{margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--canal-soft);font-size:.9rem}
 .pnote b{color:var(--canal)}
 .sharebar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.fold>summary{cursor:pointer;list-style:none;font-family:var(--display);font-weight:600;font-size:1.05rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary::before{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .15s;flex:0 0 auto}
+.fold[open]>summary::before{transform:rotate(45deg)}
+.fold[open]>summary{margin-bottom:12px}
+.fold>summary h2{display:inline;margin:0}
+.fold .tag{font-family:var(--body);font-weight:400}
+.fold-body{display:grid;gap:14px}
 .linkbtn{background:none;border:0;color:var(--canal);text-decoration:underline;cursor:pointer;padding:0}
 
 .list{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
@@ -192,6 +200,7 @@ footer{color:var(--muted);font-size:.85rem;padding:0 0 40px}
   <section class="view" id="v-list">
     <div class="filters">
       <input class="search" id="q" type="search" placeholder="Zoek op naam, wijk of kenmerk" aria-label="Zoek scholen">
+      <details class="fold" data-fold="filters" id="filtersFold"><summary>Filters <span class="tag" id="fCount" hidden></span></summary><div class="fold-body">
       <div class="frow" id="fLevel"><span class="flabel">Advies</span></div>
       <div class="frow" id="fDist"><span class="flabel">Fietstijd</span></div>
       <div class="frow" id="fRichting"><span class="flabel">Richting</span></div>
@@ -202,6 +211,7 @@ footer{color:var(--muted);font-size:.85rem;padding:0 0 40px}
         <label><input type="checkbox" id="tVso"> Voortgezet speciaal onderwijs</label>
         <label><input type="checkbox" id="tHid"> Weggefilterde scholen tonen <span id="hidCount"></span></label>
       </div>
+      </div></details>
     </div>
     <div class="exam" id="homeBox"></div>
     <div class="resultline"><span id="rCount"></span><span><label class="small">Sorteer <select id="sort" class="sel"><option value="name">op naam</option><option value="dist">op fietstijd vanaf thuis</option><option value="pass">op slagingspercentage</option></select></label> &nbsp; <button class="linkbtn" id="reset">Filters wissen</button></span></div>
@@ -360,6 +370,8 @@ function visible(){
   }).sort((a,b)=>f.sort==="name"?a.n.localeCompare(b.n,"nl"):f.sort==="pass"?((passOf(b)??-1)-(passOf(a)??-1)):(a.min??999)-(b.min??999));
 }
 function renderFilters(){
+  const nAct=(f.level?1:0)+(f.maxMin?1:0)+f.richting.size+f.aanpak.size+[f.part,f.int,f.vso,f.showHidden].filter(Boolean).length;
+  const fc=document.getElementById("fCount");fc.hidden=!nAct;fc.textContent=nAct+" actief";
   chips(document.getElementById("fLevel"),LV.map(l=>({key:l.k,label:l.full})),k=>{f.level=f.level===k?null:k},k=>f.level===k);
   chips(document.getElementById("fDist"),[10,15,20,30].map(m=>({key:m,label:"tot "+m+" min"})),k=>{f.maxMin=f.maxMin===k?null:k},k=>f.maxMin===k);
   const pool=S.filter(s=>(!s.type)||(s.type==="part"&&f.part)||(s.type==="int"&&f.int)||(s.type==="vso"&&f.vso));
@@ -425,9 +437,9 @@ function renderCompare(){
 function renderWeigh(){
   const el=document.getElementById("v-weigh"), ids=st.short.filter(id=>byId[id]);
   const wl=["telt niet","beetje","belangrijk","zwaar"];
-  let h='<h2>Wat telt voor jullie</h2><p class="sub">Geef elk criterium een gewicht van 0 tot 3. Pas de namen aan of voeg je eigen criteria toe. Je keuzes blijven bewaard in deze browser.</p><div class="criteria">'+
+  let h='<details class="fold" data-fold="crit"'+(foldOpen("crit",true)?' open':'')+'><summary><h2>Wat telt voor jullie</h2></summary><p class="sub">Geef elk criterium een gewicht van 0 tot 3. Pas de namen aan of voeg je eigen criteria toe. Je keuzes blijven bewaard in deze browser.</p><div class="criteria">'+
     st.crit.map(c=>'<div class="crit"><input type="text" value="'+esc(c.n)+'" data-cname="'+c.id+'" aria-label="Naam criterium"><div class="weight" role="group" aria-label="Gewicht">'+[0,1,2,3].map(w=>'<button aria-pressed="'+(c.w===w)+'" data-w="'+c.id+'" data-wv="'+w+'" title="'+wl[w]+'">'+w+'</button>').join("")+'</div><button class="x" data-cdel="'+c.id+'">Verwijder</button></div>').join("")+
-    '<div><button class="btn" id="addCrit">Criterium toevoegen</button></div></div>';
+    '<div><button class="btn" id="addCrit">Criterium toevoegen</button></div></div></details>';
   const partners=Object.keys(st.others||{});
   h+='<h2>Je shortlist</h2><div class="sharebar"><button class="btn primary" id="shareBtn">Deel met partner</button><button class="btn" id="sumBtn">Samenvatting delen</button>'+(partners.length?'<button class="btn" id="dropPartners">Lijst van '+esc(partners.join(" en "))+' verwijderen</button>':'')+'</div>';
   if(!ids.length){h+='<div class="empty"><strong>Je shortlist is leeg</strong>Zet scholen op je shortlist vanuit Alle scholen en beoordeel ze hier na de open dag.</div>';}
@@ -536,8 +548,9 @@ function renderExam(){
   const fi=document.getElementById("examFile");
   if(fi)fi.onchange=e=>{const file=e.target.files[0];if(!file)return;const msg=document.getElementById("examMsg");if(msg)msg.textContent="Bezig met inlezen...";
     const rd=new FileReader();rd.onload=()=>{try{st.exam=parseDuo(rd.result,file.name);st.emap={};Object.entries(DEFAULT_EMAP).forEach(([k,c])=>{if(st.exam.ves[c])st.emap[k]=c});autoMap();save();renderAll()}catch(err){if(msg)msg.textContent=err.message;else alert(err.message)}};rd.readAsText(file);};
-  const tm=document.getElementById("toggleMap"); if(tm)tm.onclick=()=>{showMap=!showMap;renderExam()};
+  const tm=document.getElementById("toggleMap"); if(tm)tm.onclick=()=>{showMap=!showMap;st.fold=st.fold||{};st.fold.exam=true;renderExam()};
   const ec=document.getElementById("examClear"); if(ec)ec.onclick=()=>{st.exam=EMBED_EXAM;st.emap=Object.assign({},DEFAULT_EMAP);save();renderAll()};
+  wrapFold(el,"exam",showMap);
 }
 
 
@@ -595,6 +608,7 @@ function renderHome(){
   if(HOME){el.innerHTML='<h3>Fietstijd vanaf '+esc(st.home.label||"thuis")+'</h3><p>Je adres staat alleen in deze browser en wordt nergens naartoe gestuurd. Alleen bij het opzoeken gaat je postcode en huisnummer eenmalig naar de PDOK Locatieserver van de overheid.</p><div class="row"><button class="linkbtn" id="homeEdit">Ander adres</button> &nbsp; <button class="linkbtn" id="homeClear">Adres wissen</button></div>';
     document.getElementById("homeEdit").onclick=()=>{HOME=null;renderHome();el.dataset.edit="1";renderHomeForm(el)};
     document.getElementById("homeClear").onclick=()=>{delete st.home;HOME=null;recalcDist();if(f.sort==="dist")f.sort="name";document.getElementById("sort").value=f.sort;save();renderAll()};
+    wrapFold(el,"home",false);
     return;}
   renderHomeForm(el);
 }
@@ -682,6 +696,13 @@ async function checkIncoming(){
   m.querySelector("#mNo").onclick=()=>m.remove();
 }
 
+
+/* ---- Inklapbare blokken, open/dicht wordt onthouden ---- */
+function foldOpen(key,def){return st.fold&&key in st.fold?st.fold[key]:def}
+function wrapFold(el,key,def){const h=el.querySelector(":scope>h3");if(!h)return;const d=document.createElement("details");d.className="fold";d.dataset.fold=key;d.open=foldOpen(key,def);
+  const sm=document.createElement("summary");sm.innerHTML=h.innerHTML;h.remove();while(el.firstChild)d.appendChild(el.firstChild);d.prepend(sm);el.appendChild(d);}
+document.addEventListener("toggle",e=>{const d=e.target;if(d&&d.dataset&&d.dataset.fold){st.fold=st.fold||{};st.fold[d.dataset.fold]=d.open;save();}},true);
+
 function renderAll(){renderHome();renderExam();renderFilters();renderList();renderAgenda();renderCompare();renderWeigh();renderTray();}
 function show(view){
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.view===view));
@@ -721,6 +742,7 @@ document.addEventListener("input",e=>{
   const t=e.target;
   if(t.dataset.note){st.notes[t.dataset.note]=t.value;save();renderCompare();}
 });
+document.getElementById("filtersFold").open=foldOpen("filters",window.matchMedia("(min-width: 700px)").matches);
 renderAll();
 checkIncoming();
 window.addEventListener("hashchange",checkIncoming);
