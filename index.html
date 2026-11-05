@@ -342,12 +342,12 @@ if(HOME)f.sort="dist";
 if(!st.exam){st.exam=EMBED_EXAM;st.emap=Object.assign({},DEFAULT_EMAP);}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 
-const f={q:"",maxMin:null,sort:"name",level:null,richting:new Set(),aanpak:new Set(),part:false,int:false,vso:false};
+const f={q:"",maxMin:null,sort:"name",level:new Set(),richting:new Set(),aanpak:new Set(),part:false,int:false,vso:false};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 function ladder(s,match){
   return '<div class="ladder" role="img" aria-label="Niveaus: '+esc(s.lv.length?s.lv.map(k=>LV.find(l=>l.k===k).full).join(", "):"apart traject")+'">'+
-    LV.map(l=>{const has=s.lv.includes(l.k);return '<div class="rung'+(has?' has':'')+(has&&match===l.k?' match':'')+'" title="'+l.full+'"><i></i><span>'+l.l+'</span></div>'}).join("")+'</div>';
+    LV.map(l=>{const has=s.lv.includes(l.k);return '<div class="rung'+(has?' has':'')+(has&&match&&match.has(l.k)?' match':'')+'" title="'+l.full+'"><i></i><span>'+l.l+'</span></div>'}).join("")+'</div>';
 }
 function chips(el,values,onClick,isOn){
   el.querySelectorAll(".chip").forEach(c=>c.remove());
@@ -361,7 +361,7 @@ function visible(){
     if(s.type==="part"&&!f.part)return false;
     if(s.type==="int"&&!f.int)return false;
     if(s.type==="vso"&&!f.vso)return false;
-    if(f.level&&!s.lv.includes(f.level))return false;
+    if(f.level.size&&![...f.level].every(k=>s.lv.includes(k)))return false;
     if(f.richting.size&&!f.richting.has(s.r))return false;
     if(f.aanpak.size&&!f.aanpak.has(s.a))return false;
     if(f.maxMin&&!(s.min!=null&&s.min<=f.maxMin))return false;
@@ -370,9 +370,12 @@ function visible(){
   }).sort((a,b)=>f.sort==="name"?a.n.localeCompare(b.n,"nl"):f.sort==="pass"?((passOf(b)??-1)-(passOf(a)??-1)):(a.min??999)-(b.min??999));
 }
 function renderFilters(){
-  const nAct=(f.level?1:0)+(f.maxMin?1:0)+f.richting.size+f.aanpak.size+[f.part,f.int,f.vso,f.showHidden].filter(Boolean).length;
+  const nAct=f.level.size+(f.maxMin?1:0)+f.richting.size+f.aanpak.size+[f.part,f.int,f.vso,f.showHidden].filter(Boolean).length;
   const fc=document.getElementById("fCount");fc.hidden=!nAct;fc.textContent=nAct+" actief";
-  chips(document.getElementById("fLevel"),LV.map(l=>({key:l.k,label:l.full})),k=>{f.level=f.level===k?null:k},k=>f.level===k);
+  const fl=document.getElementById("fLevel");
+  chips(fl,LV.map(l=>({key:l.k,label:l.full})),k=>{f.level.has(k)?f.level.delete(k):f.level.add(k)},k=>f.level.has(k));
+  const old=fl.querySelector(".chip-note");if(old)old.remove();
+  if(f.level.size>1){const n=document.createElement("span");n.className="small chip-note";n.textContent="Scholen die al deze niveaus aanbieden";fl.appendChild(n);}
   chips(document.getElementById("fDist"),[10,15,20,30].map(m=>({key:m,label:"tot "+m+" min"})),k=>{f.maxMin=f.maxMin===k?null:k},k=>f.maxMin===k);
   const pool=S.filter(s=>(!s.type)||(s.type==="part"&&f.part)||(s.type==="int"&&f.int)||(s.type==="vso"&&f.vso));
   const rs=[...new Set(pool.map(s=>s.r))].sort();
@@ -525,7 +528,7 @@ function examFor(s){if(!st.exam)return null;const c=st.emap[s.id];return c&&st.e
 const pctOf=a=>a&&a.kand?a.gesl/a.kand*100:null;
 const pctTxt=a=>{const p=pctOf(a);return p==null?"onbekend":Math.round(p)+"%"};
 function passOf(s){const e=examFor(s);if(!e)return null;
-  if(f.level){const k=f.level==="g"?"v":f.level;return e[k]?pctOf(e[k]):null}
+  if(f.level.size){const ks=[...new Set([...f.level].map(k=>k==="g"?"v":k))].filter(k=>e[k]&&e[k].kand);if(!ks.length)return null;return ks.reduce((t,k)=>t+pctOf(e[k]),0)/ks.length}
   let K=0,G=0;EXL.forEach(k=>{if(e[k]){K+=e[k].kand;G+=e[k].gesl}});return K?G/K*100:null}
 function examLine(s){
   const e=examFor(s); if(!e)return "";
@@ -722,7 +725,7 @@ document.getElementById("sort").onchange=e=>{f.sort=e.target.value;renderList()}
 document.getElementById("q").oninput=e=>{f.q=e.target.value;renderList()};
 ["tPart","tInt","tVso"].forEach((id,i)=>document.getElementById(id).onchange=e=>{f[["part","int","vso"][i]]=e.target.checked;renderAll()});
 document.getElementById("tHid").onchange=e=>{f.showHidden=e.target.checked;renderList()};
-document.getElementById("reset").onclick=()=>{f.showHidden=false;f.q="";f.maxMin=null;f.level=null;f.richting.clear();f.aanpak.clear();f.part=f.int=f.vso=false;document.getElementById("q").value="";["tPart","tInt","tVso"].forEach(id=>document.getElementById(id).checked=false);renderAll()};
+document.getElementById("reset").onclick=()=>{f.showHidden=false;f.q="";f.maxMin=null;f.level.clear();f.richting.clear();f.aanpak.clear();f.part=f.int=f.vso=false;document.getElementById("q").value="";["tPart","tInt","tVso"].forEach(id=>document.getElementById(id).checked=false);renderAll()};
 
 document.addEventListener("click",e=>{
   const b=e.target.closest("button"); if(!b)return;
