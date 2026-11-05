@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Middelbare scholen Utrecht vergelijken</title>
+<meta name="description" content="Vergelijk alle middelbare scholen in Utrecht op niveau, richting, onderwijsaanpak, fietstijd en examenresultaten. Je keuzes blijven in je eigen browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Familjen+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --card:#FFFFFF; --ink:#18201E; --muted:#5B6663; --line:#D9DEDB;
+  --red:#C4161C; --red-soft:#FBE7E7; --canal:#1F5C57; --canal-soft:#DCEBE8; --empty:#E7EBE9;
+  --display:"Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", Roboto, Arial, sans-serif;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#121816; --card:#19211F; --ink:#E9EEEC; --muted:#9AA6A2; --line:#2C3633;
+    --red:#FF6B6F; --red-soft:#3A1E20; --canal:#73C5BA; --canal-soft:#1D2F2C; --empty:#26302D;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121816; --card:#19211F; --ink:#E9EEEC; --muted:#9AA6A2; --line:#2C3633;
+  --red:#FF6B6F; --red-soft:#3A1E20; --canal:#73C5BA; --canal-soft:#1D2F2C; --empty:#26302D;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+
+header{padding:28px 0 8px}
+.brand{display:flex;gap:14px;align-items:flex-start}
+.flag{flex:0 0 auto;width:44px;height:44px;border-radius:6px;background:linear-gradient(135deg,#fff 0 50%,#C4161C 50% 100%);box-shadow:inset 0 0 0 1px var(--line);margin-top:4px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.05;letter-spacing:-.02em;margin:0}
+.lead{color:var(--muted);margin:8px 0 0;max-width:62ch}
+
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line);margin-top:16px}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
+.tab{background:none;border:0;padding:14px 12px 12px;font-family:var(--display);font-weight:600;font-size:1rem;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--red)}
+.count{display:inline-block;min-width:1.4em;padding:0 .4em;margin-left:4px;border-radius:99px;background:var(--canal-soft);color:var(--canal);font-size:.85rem;text-align:center}
+
+section.view{padding:20px 0 120px}
+.hidden{display:none!important}
+
+.filters{display:grid;gap:14px;margin-bottom:18px}
+.search{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.frow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.flabel{font-weight:700;font-size:.9rem;margin-right:4px;min-width:72px}
+.chip{border:1px solid var(--line);background:var(--card);padding:6px 12px;border-radius:99px;cursor:pointer;font-size:.92rem}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.toggles{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.92rem;color:var(--muted)}
+.toggles label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.resultline{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:.92rem;margin-bottom:10px}
+.sel{border:1px solid var(--line);border-radius:8px;padding:4px 6px;background:var(--card)}
+.dist{font-weight:700;color:var(--ink);font-size:.95rem;margin:0}
+.exam{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:.93rem}
+.exam h3{font-family:var(--display);font-size:1.05rem;margin:0 0 4px}
+.exam p{margin:0 0 8px;color:var(--muted);max-width:70ch}
+.exam .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filebtn{display:inline-block;background:var(--red);color:#fff;border-radius:8px;padding:7px 12px;cursor:pointer}
+.filebtn input{display:none}
+.maptbl{margin-top:12px;display:grid;gap:6px}
+.maptbl label{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:8px;align-items:center}
+.maptbl select{width:100%;border:1px solid var(--line);border-radius:8px;padding:5px;background:var(--paper)}
+.score-line{margin:0;font-size:.92rem}
+.score-line b{font-weight:700}
+.pct-low{color:var(--red)}
+.ag-month{font-family:var(--display);font-size:1.1rem;margin:22px 0 8px;text-transform:capitalize}
+.ev{display:grid;grid-template-columns:64px 1fr;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px}
+.ev.big{border-left:4px solid var(--red)}
+.ev.today{box-shadow:0 0 0 2px var(--red)}
+.evd{text-align:center;line-height:1.1}
+.evd b{display:block;font-family:var(--display);font-size:1.5rem}
+.evd span{font-size:.8rem;color:var(--muted);text-transform:uppercase}
+.ev h4{margin:0;font-family:var(--display);font-size:1rem}
+.ev p{margin:2px 0 0;font-size:.9rem;color:var(--muted)}
+.ev .ext{margin-top:6px}
+.next-line{margin:0;font-size:.92rem}
+.linkbtn{background:none;border:0;color:var(--canal);text-decoration:underline;cursor:pointer;padding:0}
+
+.list{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.school{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.school.picked{border-color:var(--canal);box-shadow:0 0 0 1px var(--canal)}
+.school h3{font-family:var(--display);font-size:1.15rem;line-height:1.2;margin:0}
+.meta{color:var(--muted);font-size:.92rem;margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.8rem;padding:2px 8px;border-radius:6px;background:var(--canal-soft);color:var(--canal)}
+.tag.warn{background:var(--red-soft);color:var(--red)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:.92rem}
+.btn.on{background:var(--canal);border-color:var(--canal);color:var(--paper)}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.ext{font-size:.88rem;color:var(--canal)}
+.ext a{color:inherit}
+
+/* The level ladder: the one visual signature */
+.ladder{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.rung{display:flex;flex-direction:column;gap:3px;align-items:stretch}
+.rung i{display:block;height:10px;border-radius:2px;background:var(--empty)}
+.rung.has i{background:var(--canal)}
+.rung.has.match i{background:var(--red)}
+.rung span{font-size:.7rem;color:var(--muted);text-align:center;line-height:1}
+.rung.has span{color:var(--ink);font-weight:700}
+
+.tray{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--ink);color:var(--paper);padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px))}
+.tray .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.tray .btn{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid var(--line);font-size:.93rem}
+thead th{font-family:var(--display);font-size:1rem;position:sticky;top:0;background:var(--card)}
+tbody th{color:var(--muted);font-weight:700;width:120px;position:sticky;left:0;background:var(--card)}
+tr:last-child td,tr:last-child th{border-bottom:0}
+.x{background:none;border:0;color:var(--muted);cursor:pointer;font-size:.85rem;text-decoration:underline;padding:0;margin-top:4px;display:block}
+.empty{padding:32px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+.empty strong{display:block;color:var(--ink);font-family:var(--display);font-size:1.1rem;margin-bottom:4px}
+
+h2{font-family:var(--display);font-size:1.35rem;margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 16px;max-width:65ch}
+.criteria{display:grid;gap:10px;margin-bottom:28px}
+.crit{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.crit input[type=text]{border:0;background:transparent;font-weight:700;min-width:0;padding:4px 0}
+.weight{display:flex;gap:4px}
+.weight button,.rate button{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:.9rem}
+.weight button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.rate button[aria-pressed="true"]{background:var(--canal);color:var(--paper);border-color:var(--canal)}
+.wl{font-size:.75rem;color:var(--muted);text-align:center;grid-column:2}
+.rank{display:grid;gap:12px}
+.rcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.rhead{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.rhead h3{font-family:var(--display);margin:0;font-size:1.1rem}
+.score{font-family:var(--display);font-weight:700;font-size:1.6rem;color:var(--red);white-space:nowrap}
+.score small{font-size:.85rem;color:var(--muted);font-weight:500}
+.bar{height:6px;border-radius:3px;background:var(--empty);margin:8px 0 12px;overflow:hidden}
+.bar b{display:block;height:100%;background:var(--red);transition:width .3s}
+.rrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.rrow span{font-size:.93rem}
+.rate{display:flex;gap:4px}
+textarea{width:100%;min-height:64px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--paper);margin-top:8px;resize:vertical}
+.small{font-size:.88rem;color:var(--muted)}
+.note{margin-top:28px;padding:14px 16px;border-left:3px solid var(--canal);background:var(--canal-soft);border-radius:0 8px 8px 0;font-size:.92rem;max-width:72ch}
+footer{color:var(--muted);font-size:.85rem;padding:0 0 40px}
+@media (max-width:560px){.flabel{width:100%}.crit{grid-template-columns:1fr auto}.crit .weight{grid-column:1/-1}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="brand">
+    <div class="flag" aria-hidden="true"></div>
+    <div>
+      <h1>Middelbare scholen in Utrecht</h1>
+      <p class="lead">Filter op het advies van je kind en de fietstijd vanaf je huis, zet scholen naast elkaar en weeg ze op wat voor jullie telt.</p>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Weergave">
+  <div class="wrap" role="tablist">
+    <button class="tab" role="tab" data-view="list" aria-selected="true">Alle scholen</button>
+    <button class="tab" role="tab" data-view="compare" aria-selected="false">Vergelijken <span class="count" id="cCount">0</span></button>
+    <button class="tab" role="tab" data-view="agenda" aria-selected="false">Open dagen</button>
+    <button class="tab" role="tab" data-view="weigh" aria-selected="false">Mijn afweging <span class="count" id="sCount">0</span></button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section class="view" id="v-list">
+    <div class="filters">
+      <input class="search" id="q" type="search" placeholder="Zoek op naam, wijk of kenmerk" aria-label="Zoek scholen">
+      <div class="frow" id="fLevel"><span class="flabel">Advies</span></div>
+      <div class="frow" id="fDist"><span class="flabel">Fietstijd</span></div>
+      <div class="frow" id="fRichting"><span class="flabel">Richting</span></div>
+      <div class="frow" id="fAanpak"><span class="flabel">Aanpak</span></div>
+      <div class="toggles">
+        <label><input type="checkbox" id="tPart"> Particulier (lesgeld)</label>
+        <label><input type="checkbox" id="tInt"> Internationaal en schakelklas</label>
+        <label><input type="checkbox" id="tVso"> Voortgezet speciaal onderwijs</label>
+        <label><input type="checkbox" id="tHid"> Weggefilterde scholen tonen <span id="hidCount"></span></label>
+      </div>
+    </div>
+    <div class="exam" id="homeBox"></div>
+    <div class="exam" id="examBox"></div>
+    <div class="resultline"><span id="rCount"></span><span><label class="small">Sorteer <select id="sort" class="sel"><option value="name">op naam</option><option value="dist">op fietstijd vanaf thuis</option><option value="pass">op slagingspercentage</option></select></label> &nbsp; <button class="linkbtn" id="reset">Filters wissen</button></span></div>
+    <div class="list" id="list"></div>
+  </section>
+
+  <section class="view hidden" id="v-compare"></section>
+  <section class="view hidden" id="v-agenda"></section>
+  <section class="view hidden" id="v-weigh"></section>
+</main>
+
+<div class="tray hidden" id="tray">
+  <div class="wrap"><span id="trayText"></span><button class="btn" id="trayGo">Vergelijk</button></div>
+</div>
+
+<footer class="wrap">
+  <p style="margin:0 0 12px"><b style="color:var(--ink)">Mijn keuzes</b> (shortlist, scores, notities, adres) staan alleen in deze browser. <button class="linkbtn" id="expBtn">Opslaan als bestand</button> &nbsp; <label class="linkbtn" style="cursor:pointer">Bestand laden<input type="file" accept=".json,application/json" id="impFile" style="display:none"></label><br><span>Handig als back-up, om naar een ander apparaat over te stappen of om je lijst met je partner te delen.</span></p>
+  Deze app is een hulpmiddel van een ouder voor ouders, geen officiële bron. Examencijfers: DUO Open Onderwijsdata, examenjaar 2024-2025 (CC-BY 4.0). Adressen opgezocht via Google Maps, je eigen adres via PDOK Locatieserver. Bron schoollijst: Scholen op de kaart en De VO Gids (oktober 2026). Niveaus en kenmerken zijn een startpunt, geen officiële registratie. Slagingspercentages, inspectieoordeel en leerlingaantallen vind je per school via de link Scholen op de kaart. Fietsafstand is een schatting: hemelsbrede afstand maal 1,3 voor omrijden, bij 15 km/u. De link Fietsroute geeft de exacte route.
+</footer>
+
+<script>
+const LV = [
+  {k:"pro",l:"pro",full:"Praktijkonderwijs"},
+  {k:"b",l:"b",full:"vmbo-basis"},
+  {k:"k",l:"k",full:"vmbo-kader"},
+  {k:"t",l:"t/m",full:"mavo / vmbo-t"},
+  {k:"h",l:"h",full:"havo"},
+  {k:"v",l:"v",full:"vwo (atheneum)"},
+  {k:"g",l:"g",full:"gymnasium"}
+];
+const SOK = "https://scholenopdekaart.nl/middelbare-scholen/utrecht/";
+const SOKQ = n => "https://scholenopdekaart.nl/zoeken/middelbare-scholen?zoektermen=" + encodeURIComponent(n) + "&weergave=Lijst";
+
+const S = [
+ {id:"cgu",n:"Christelijk Gymnasium Utrecht",lv:["g"],r:"Protestants-christelijk",a:"Regulier",tags:["Categoraal gymnasium","Klassieke talen"],u:SOK+"1026/christelijk-gymnasium-utrecht"},
+ {id:"usg",n:"Utrechts Stedelijk Gymnasium",lv:["g"],r:"Openbaar",a:"Regulier",tags:["Categoraal gymnasium","Klassieke talen","NUOVO"],u:SOK+"2311/utrechts-stedelijk-gymnasium"},
+ {id:"boni",n:"St. Bonifatiuscollege",lv:["h","v","g"],r:"Rooms-katholiek",a:"Regulier",tags:["Havo/vwo-school"],u:SOK+"1020/st-bonifatiuscollege"},
+ {id:"greg",n:"Sint Gregorius College",lv:["t","h","v","g"],r:"Rooms-katholiek",a:"Regulier",tags:["Havo/vwo-school"],u:SOKQ("Sint Gregorius College")},
+ {id:"tophavo",n:"Globe TopHavo",lv:["h"],r:"Rooms-katholiek",a:"Regulier",tags:["Alleen havo","Locatie van Sint Gregorius"],u:SOK+"26911/sint-gregorius-college-locatie-globe-tophavo"},
+ {id:"descart",n:"Descart",lv:["h","v"],r:"Rooms-katholiek",a:"Thematisch",tags:["Design, science & art","Muziek, dans, toneel","Laptop + boeken","Onderdeel van Gregorius"],u:SOK+"26558/descart"},
+ {id:"globe",n:"Globe College vmbo",lv:["b","k","t"],r:"Rooms-katholiek",a:"Regulier",tags:["Breed vmbo"],u:SOK+"1033/globe-college-utrecht-vmbo"},
+ {id:"rietveld",n:"Gerrit Rietveld College",lv:["t","h","v"],r:"Openbaar",a:"Regulier",tags:["Brede scholengemeenschap","NUOVO","Vaak loting"],u:SOK+"1024/gerrit-rietveld-college"},
+ {id:"lrc",n:"Leidsche Rijn College",lv:["h","v"],r:"Openbaar",a:"Regulier",tags:["Havo/vwo-school","Vmbo zit bij VOLT!","NUOVO"],u:SOK+"2319/leidsche-rijn-college"},
+ {id:"amadeus",n:"Amadeus Lyceum",lv:["t","h","v"],r:"Openbaar",a:"Thematisch",tags:["Kunst en cultuur","Eigentijds leren","NUOVO","Vaak loting"],u:SOKQ("Amadeus Lyceum")},
+ {id:"limus",n:"Limus College",lv:["t","h","v"],r:"Openbaar",a:"Regulier",tags:["Nieuwe school","Plek voor 1.000 leerlingen"],u:SOKQ("Limus College")},
+ {id:"tien",n:"Academie Tien",lv:["t","h","v"],r:"Openbaar",a:"10-14 onderwijs",tags:["Start al vanaf 10 jaar","Kleinschalige start (sinds 2015)","NUOVO"],u:SOK+"23733/academie-tien"},
+ {id:"unic",n:"UniC",lv:["h","v"],r:"Openbaar",a:"Gepersonaliseerd leren",tags:["Eigen leerroute en tempo","Coaching","NUOVO"],u:SOK+"22452/unic"},
+ {id:"x11",n:"X11 media en vormgeving",lv:["b","k","t","h"],r:"Openbaar",a:"Thematisch",tags:["Media en vormgeving","Creatief vmbo","NUOVO"],u:SOK+"2322/x11"},
+ {id:"volt",n:"VOLT! Toekomstmakers",lv:["b","k","t"],r:"Openbaar",a:"Thematisch",tags:["Vmbo in Leidsche Rijn","Sportklas","Zelfde gebouw als Limus","NUOVO"],u:SOKQ("VOLT! Toekomstmakers")},
+ {id:"mpower",n:"MPower",lv:["pro","b","k","t"],r:"Openbaar",a:"Praktijkgericht",tags:["Nieuwe school","Leren door doen","Praktijk + vmbo + mbo","NUOVO"],u:SOK+"2315/mpower"},
+ {id:"kranenburg",n:"Kranenburg Praktijkonderwijs",lv:["pro"],r:"Onbekend",a:"Praktijkgericht",tags:["Categoraal praktijkonderwijs"],u:SOK+"1016/kranenburg-praktijkonderwijs"},
+ {id:"yuverta",n:"Yuverta vmbo Utrecht",lv:["b","k","t"],r:"Algemeen bijzonder",a:"Thematisch",tags:["Groen vmbo","Natuur, dieren, voeding"],u:SOK+"1711/yuverta-vmbo-utrecht"},
+ {id:"passie",n:"De Passie Utrecht",lv:["t","h","v"],r:"Christelijk (evangelisch)",a:"Regulier",tags:["Kleinschalig","Christelijke identiteit"],u:SOK+"1735/de-passie-utrecht"},
+ {id:"alamana",n:"Al Amana College",lv:["t","h","v"],r:"Islamitisch",a:"Regulier",tags:["Jonge school","Islamitische identiteit"],u:SOK+"39655/al-amana-college-utrecht"},
+ {id:"waldorf",n:"Waldorf Utrecht",lv:["t","h","v"],r:"Algemeen bijzonder",a:"Vrijeschool",tags:["Vrijeschoolpedagogiek","Kunstzinnig, periodeonderwijs"],u:SOK+"1018/waldorf-utrecht"},
+ {id:"singel-hv",n:"School aan de Singel Montessori (havo/vwo)",lv:["h","v"],r:"Onbekend",a:"Montessori",tags:["Montessori","Voorheen Jordan-Montessori Lyceum"],u:SOK+"2171/school-aan-de-singel-montessori-havo-vwo"},
+ {id:"singel-mh",n:"School aan de Singel Montessori (mavo/havo)",lv:["t","h"],r:"Onbekend",a:"Montessori",tags:["Montessori","Mavo/havo-stroom"],u:SOK+"89503/school-aan-de-singel-montessori-mavo-havo"},
+ {id:"isu",n:"International School Utrecht",lv:["h","v"],r:"Openbaar",a:"International Baccalaureate",type:"int",tags:["Engelstalig","IB (MYP en DP)","Voor internationale gezinnen"],u:SOK+"23166/international-school-utrecht"},
+ {id:"ithaka",n:"Ithaka internationale schakelklassen",lv:[],r:"Openbaar",a:"Schakelklas (ISK)",type:"int",tags:["Voor nieuwkomers","Eerst Nederlands leren"],u:SOK+"2321/ithaka-internationale-schakelklassen"},
+ {id:"luzac",n:"Luzac Utrecht",lv:["t","h","v"],r:"Particulier",a:"Kleine klassen",type:"part",tags:["Lesgeld","Intensieve begeleiding"],u:"https://www.devogids.nl/27192/luzac-utrecht/"},
+ {id:"winford",n:"Winford Utrecht",lv:["h","v"],r:"Particulier",a:"Kleine klassen",type:"part",tags:["Lesgeld","Kleine klassen"],u:"https://www.devogids.nl/27862/winford-utrecht/"},
+ {id:"ranitz",n:"College Ariane de Ranitz",lv:["t","h","v"],r:"Onbekend",a:"Speciaal onderwijs",type:"vso",tags:["VSO","Toelaatbaarheidsverklaring nodig"],u:SOK+"33151/college-ariane-de-ranitz"},
+ {id:"kromme",n:"Kromme Rijn College",lv:["pro","b","k","t","h","v"],r:"Openbaar",a:"Speciaal onderwijs",type:"vso",tags:["VSO cluster 4","Klein, ca. 100–120 leerlingen","Doel: terug naar regulier"],u:SOK+"23803/kromme-rijn-college"},
+ {id:"stip",n:"STIP VSO Utrecht",lv:[],r:"Onbekend",a:"Speciaal onderwijs",type:"vso",tags:["VSO","Toelaatbaarheidsverklaring nodig"],u:SOK+"7991/stip-vso-utrecht"},
+ {id:"kentalis",n:"Kentalis College Utrecht",lv:[],r:"Onbekend",a:"Speciaal onderwijs",type:"vso",tags:["VSO cluster 2","Taal, spraak, gehoor"],u:SOK+"23944/kentalis-college-utrecht"},
+ {id:"redl",n:"Prof. Fritz Redlschool",lv:[],r:"Onbekend",a:"Speciaal onderwijs",type:"vso",tags:["VSO","Langdurig zieke kinderen"],u:SOK+"70843/prof-fritz-redlschool-voor-langdurig-zieke-kinderen"}
+];
+const byId = Object.fromEntries(S.map(s=>[s.id,s]));
+let HOME=null; /* wordt per bezoeker ingesteld, alleen in de eigen browser */
+const GEO={
+ cgu:[52.0881724,5.0994426,"Koningsbergerstraat 2"],
+ usg:[52.0822215,5.1332114,"Ina Boudier-Bakkerlaan 7"],
+ boni:[52.083191,5.1366589,"Burg. Fockema Andreaelaan 7"],
+ greg:[52.0964348,5.1207465,"Van Asch van Wijckskade 20"],
+ descart:[52.080108,5.099285,"Grebbeberglaan 7"],
+ globe:[52.067382,5.0955798,"Bontekoelaan 1"],
+ rietveld:[52.1112493,5.1372425,"Eykmanlaan 1200"],
+ lrc:[52.0921699,5.0608459,"Maartvlinder 1"],
+ amadeus:[52.0941713,5.0112137,"Burchtpoort 3, Vleuten"],
+ limus:[52.1016562,5.0079923,"Oesterzwam 1, De Meern"],
+ volt:[52.101532,5.0081966,"Oesterzwam 1, De Meern"],
+ tien:[52.0955764,5.0708315,"Berlijnplein 300"],
+ unic:[52.0803079,5.0964748,"Van Bijnkershoeklaan 2"],
+ x11:[52.0790383,5.0974005,"Grebbeberglaan 25"],
+ mpower:[52.112557,5.1173204,"La Bohèmedreef 7"],
+ kranenburg:[52.0765825,5.1397945,"Tamboersdijk 9"],
+ yuverta:[52.1206624,5.0692437,"Theo Thijssenplein 32"],
+ passie:[52.0626579,5.1417859,"Zwarte Woud 211"],
+ alamana:[52.1034528,5.1098805,"Noordse Parklaan 4"],
+ waldorf:[52.0964318,5.1207813,"Van Asch van Wijckskade 20"],
+ "singel-hv":[52.0957122,5.1256012,"Wittevrouwenkade 4"],
+ "singel-mh":[52.0957122,5.1256012,"Wittevrouwenkade 4"],
+ isu:[52.0717807,5.0754268,"Van Deventerlaan 1"],
+ ithaka:[52.1084902,5.1151795,"Vader Rijndreef 7-9"],
+ luzac:[52.0886573,5.1209832,"Oudegracht 189"],
+ winford:[52.087463,5.1254211,"Nieuwegracht 69-A"],
+ ranitz:[52.0796154,5.1551262,"Mytylweg 90"],
+ kromme:[52.0789923,5.1335161,"Kranenburgerweg 20"],
+ stip:[52.065126,5.1066703,"Europalaan 89"],
+ kentalis:[52.0697718,5.1286548,"Slotlaan 37"],
+ redl:[52.0883057,5.1832797,"Heidelberglaan 100"]
+};
+const DETOUR=1.3, KMH=15;
+function hav(a,b,c,d){const R=6371,r=x=>x*Math.PI/180,dl=r(c-a),dn=r(d-b);const h=Math.sin(dl/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(h));}
+S.forEach(s=>{const g=GEO[s.id];if(g){s.lat=g[0];s.lng=g[1];s.addr=g[2];}});
+function recalcDist(){S.forEach(s=>{if(HOME&&s.lat){s.km=hav(HOME.lat,HOME.lng,s.lat,s.lng)*DETOUR;s.min=Math.round(s.km/KMH*60);}else{s.km=null;s.min=null;}});}
+const fmtKm=k=>k.toFixed(1).replace(".",",");
+const distTxt=s=>s.km!=null?"ca. "+fmtKm(s.km)+" km, "+s.min+" min fietsen":(HOME?"Afstand onbekend":"Vul je adres in voor de fietstijd");
+const routeUrl=s=>s.lat&&HOME?"https://www.google.com/maps/dir/?api=1&origin="+HOME.lat+","+HOME.lng+"&destination="+s.lat+","+s.lng+"&travelmode=bicycling":"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(s.n+" Utrecht");
+
+const typeLabel = t => t==="part"?"Particulier":t==="int"?"Internationaal / schakelklas":t==="vso"?"Voortgezet speciaal onderwijs":"Regulier, bekostigd";
+
+const EMBED_EXAM={"year":"2024-2025","ves":{"00RO00":{"name":"Amadeus Lyceum","lv":{"h":{"kand":183,"gesl":172,"approx":false,"ce":6.58},"t":{"kand":83,"gesl":80,"approx":true,"ce":6.38},"v":{"kand":147,"gesl":139,"approx":false,"ce":6.49}}},"01KF00":{"name":"St Gregorius College","lv":{"h":{"kand":8,"gesl":8,"approx":true,"ce":6.7},"t":{"kand":48,"gesl":44,"approx":true,"ce":6.3},"v":{"kand":5,"gesl":5,"approx":true,"ce":6.9}}},"01KF04":{"name":"Descart","lv":{"h":{"kand":46,"gesl":46,"approx":true,"ce":6.64}}},"01KF06":{"name":"Globe College TopHavo","lv":{"h":{"kand":14,"gesl":11,"approx":false,"ce":5.6}}},"01OE18":{"name":"Yuverta","lv":{"b":{"kand":28,"gesl":28,"approx":false,"ce":6.6},"t":{"kand":36,"gesl":31,"approx":false,"ce":6.29},"k":{"kand":32,"gesl":29,"approx":false,"ce":6.2}}},"02UE00":{"name":"SGM St Bonifatius Coll","lv":{"h":{"kand":98,"gesl":78,"approx":true,"ce":6.27},"v":{"kand":172,"gesl":149,"approx":false,"ce":6.32}}},"14OY00":{"name":"Gerrit Rietveld College","lv":{"h":{"kand":89,"gesl":58,"approx":true,"ce":6.02},"t":{"kand":47,"gesl":40,"approx":true,"ce":6.16},"v":{"kand":81,"gesl":62,"approx":true,"ce":6.19}}},"15JM00":{"name":"Utrechts Stedelijk Gymnasium","lv":{"v":{"kand":172,"gesl":163,"approx":false,"ce":6.74}}},"16PA00":{"name":"Chr Gymnasium","lv":{"v":{"kand":144,"gesl":139,"approx":false,"ce":6.98}}},"18AN00":{"name":"Globe College","lv":{"b":{"kand":64,"gesl":63,"approx":false,"ce":6.68},"k":{"kand":53,"gesl":52,"approx":true,"ce":6.43},"t":{"kand":43,"gesl":41,"approx":true,"ce":6.2}}},"24TJ00":{"name":"NUOVO Scholen","lv":{"b":{"kand":53,"gesl":47,"approx":false,"ce":6.3},"t":{"kand":31,"gesl":23,"approx":false,"ce":5.9},"k":{"kand":58,"gesl":53,"approx":false,"ce":6.1}}},"24TJ05":{"name":"School aan de Singel","lv":{"t":{"kand":0,"gesl":0,"approx":true,"ce":null}}},"24TR00":{"name":"NUOVO scholengroep","lv":{"h":{"kand":154,"gesl":129,"approx":true,"ce":6.17},"v":{"kand":104,"gesl":96,"approx":true,"ce":6.58}}},"24TR05":{"name":"VOLT! Toekomstmakers","lv":{"b":{"kand":28,"gesl":25,"approx":false,"ce":6.37},"t":{"kand":47,"gesl":27,"approx":true,"ce":5.69},"k":{"kand":66,"gesl":49,"approx":false,"ce":6.03}}},"24TR10":{"name":"ACADEMIE TIEN","lv":{"h":{"kand":60,"gesl":54,"approx":true,"ce":6.45},"t":{"kand":94,"gesl":78,"approx":false,"ce":6.23},"v":{"kand":5,"gesl":5,"approx":true,"ce":7.0}}},"24TR15":{"name":"X11 vest. Vondellaan","lv":{"h":{"kand":61,"gesl":44,"approx":true,"ce":6.07},"b":{"kand":16,"gesl":16,"approx":false,"ce":6.2},"k":{"kand":73,"gesl":67,"approx":false,"ce":6.1},"t":{"kand":124,"gesl":104,"approx":true,"ce":6.2}}},"27DG00":{"name":"De Passie","lv":{"h":{"kand":67,"gesl":65,"approx":true,"ce":6.64},"t":{"kand":50,"gesl":48,"approx":true,"ce":6.51},"v":{"kand":58,"gesl":57,"approx":true,"ce":7.02}}},"30UB00":{"name":"UniC","lv":{"h":{"kand":97,"gesl":87,"approx":true,"ce":6.46},"v":{"kand":90,"gesl":83,"approx":false,"ce":6.41}}},"30UB02":{"name":"School aan de Singel","lv":{"h":{"kand":17,"gesl":11,"approx":true,"ce":5.38},"v":{"kand":16,"gesl":15,"approx":true,"ce":6.3}}}},"nat":{"h":{"pct":85.6,"ce":6.34},"v":{"pct":88.9,"ce":6.47},"t":{"pct":91.8,"ce":6.39},"b":{"pct":97.8,"ce":6.71},"k":{"pct":95.4,"ce":6.44}}};
+const DEFAULT_EMAP={amadeus:"00RO00",greg:"01KF00",descart:"01KF04",tophavo:"01KF06",yuverta:"01OE18",boni:"02UE00",rietveld:"14OY00",usg:"15JM00",cgu:"16PA00",globe:"18AN00",mpower:"24TJ00","singel-mh":"24TJ05",lrc:"24TR00",volt:"24TR05",tien:"24TR10",x11:"24TR15",passie:"27DG00",unic:"30UB00","singel-hv":"30UB02"};
+const KEY="vo-utrecht-v1";
+const DEFAULT_CRIT=[
+  {id:"c1",n:"Bereikbaarheid (fietstijd)",w:3},
+  {id:"c2",n:"Sfeer op de open dag",w:3},
+  {id:"c3",n:"Aanpak past bij mijn kind",w:2},
+  {id:"c4",n:"Extra's (sport, kunst, tto)",w:1},
+  {id:"c5",n:"Wat mijn kind zelf vindt",w:3}
+];
+let st={compare:[],short:[],crit:DEFAULT_CRIT,rate:{},notes:{},visited:{},exam:null,emap:{},hidden:[]};
+try{const raw=localStorage.getItem(KEY); if(raw){st=Object.assign(st,JSON.parse(raw));}}catch(e){}
+HOME=st.home||null; recalcDist();
+if(HOME)f.sort="dist";
+if(!st.exam){st.exam=EMBED_EXAM;st.emap=Object.assign({},DEFAULT_EMAP);}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+
+const f={q:"",maxMin:null,sort:"name",level:null,richting:new Set(),aanpak:new Set(),part:false,int:false,vso:false};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function ladder(s,match){
+  return '<div class="ladder" role="img" aria-label="Niveaus: '+esc(s.lv.length?s.lv.map(k=>LV.find(l=>l.k===k).full).join(", "):"apart traject")+'">'+
+    LV.map(l=>{const has=s.lv.includes(l.k);return '<div class="rung'+(has?' has':'')+(has&&match===l.k?' match':'')+'" title="'+l.full+'"><i></i><span>'+l.l+'</span></div>'}).join("")+'</div>';
+}
+function chips(el,values,onClick,isOn){
+  el.querySelectorAll(".chip").forEach(c=>c.remove());
+  values.forEach(v=>{const b=document.createElement("button");b.className="chip";b.textContent=v.label;b.setAttribute("aria-pressed",isOn(v.key));b.onclick=()=>{onClick(v.key);renderAll()};el.appendChild(b)});
+}
+function visible(){
+  const q=f.q.trim().toLowerCase();
+  return S.filter(s=>{
+    if(f.showHidden){if(!st.hidden.includes(s.id))return false;}
+    else if(st.hidden.includes(s.id))return false;
+    if(s.type==="part"&&!f.part)return false;
+    if(s.type==="int"&&!f.int)return false;
+    if(s.type==="vso"&&!f.vso)return false;
+    if(f.level&&!s.lv.includes(f.level))return false;
+    if(f.richting.size&&!f.richting.has(s.r))return false;
+    if(f.aanpak.size&&!f.aanpak.has(s.a))return false;
+    if(f.maxMin&&!(s.min!=null&&s.min<=f.maxMin))return false;
+    if(q&&!(s.n+" "+(s.addr||"")+" "+s.tags.join(" ")+" "+s.r+" "+s.a).toLowerCase().includes(q))return false;
+    return true;
+  }).sort((a,b)=>f.sort==="name"?a.n.localeCompare(b.n,"nl"):f.sort==="pass"?((passOf(b)??-1)-(passOf(a)??-1)):(a.min??999)-(b.min??999));
+}
+function renderFilters(){
+  chips(document.getElementById("fLevel"),LV.map(l=>({key:l.k,label:l.full})),k=>{f.level=f.level===k?null:k},k=>f.level===k);
+  chips(document.getElementById("fDist"),[10,15,20,30].map(m=>({key:m,label:"tot "+m+" min"})),k=>{f.maxMin=f.maxMin===k?null:k},k=>f.maxMin===k);
+  const pool=S.filter(s=>(!s.type)||(s.type==="part"&&f.part)||(s.type==="int"&&f.int)||(s.type==="vso"&&f.vso));
+  const rs=[...new Set(pool.map(s=>s.r))].sort();
+  const as=[...new Set(pool.map(s=>s.a))].sort();
+  chips(document.getElementById("fRichting"),rs.map(r=>({key:r,label:r})),k=>{f.richting.has(k)?f.richting.delete(k):f.richting.add(k)},k=>f.richting.has(k));
+  chips(document.getElementById("fAanpak"),as.map(a=>({key:a,label:a})),k=>{f.aanpak.has(k)?f.aanpak.delete(k):f.aanpak.add(k)},k=>f.aanpak.has(k));
+}
+function card(s){
+  const inC=st.compare.includes(s.id), inS=st.short.includes(s.id);
+  return '<article class="school'+(inC?' picked':'')+'">'+
+    '<h3>'+esc(s.n)+'</h3>'+ladder(s,f.level)+
+    '<p class="dist">'+distTxt(s)+'</p>'+examLine(s)+nextLine(s)+'<p class="meta">'+esc(s.r)+', '+esc(s.a.toLowerCase())+(s.addr?'<br>'+esc(s.addr):'')+'</p>'+
+    '<div class="tags">'+(s.type?'<span class="tag warn">'+typeLabel(s.type)+'</span>':'')+s.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join("")+'</div>'+
+    '<div class="actions"><button class="btn'+(inC?' on':'')+'" data-cmp="'+s.id+'">'+(inC?'In vergelijking':'Vergelijk')+'</button>'+
+    '<button class="btn'+(inS?' on':'')+'" data-short="'+s.id+'">'+(inS?'Op shortlist':'Shortlist')+'</button>'+
+    (st.hidden.includes(s.id)?'<button class="btn primary" data-unhide="'+s.id+'">Terugzetten</button>':'<button class="btn" data-hide="'+s.id+'" title="Verberg deze school in de lijst en de agenda">Wegfilteren</button>')+'</div>'+
+    '<div class="ext"><a href="'+s.u+'" target="_blank" rel="noopener">Cijfers en inspectie</a> &nbsp; <a href="'+routeUrl(s)+'" target="_blank" rel="noopener">Fietsroute</a></div>'+
+  '</article>';
+}
+function renderList(){
+  const v=visible();
+  const nh=st.hidden.filter(id=>byId[id]).length;
+  document.getElementById("hidCount").textContent=nh?"("+nh+")":"";
+  document.getElementById("tHid").checked=!!f.showHidden;
+  document.getElementById("rCount").textContent=f.showHidden?nh+(nh===1?" weggefilterde school":" weggefilterde scholen"):v.length+" van "+S.length+" scholen"+(nh?", "+nh+" weggefilterd":"");
+  document.getElementById("list").innerHTML=v.length?v.map(card).join(""):(f.showHidden?'<div class="empty"><strong>Je hebt nog geen scholen weggefilterd</strong>Gebruik de knop Wegfilteren op een schoolkaart.</div>':'<div class="empty"><strong>Geen school past bij deze filters</strong>Haal een filter weg of zet een extra schoolsoort aan.</div>');
+}
+function toggleCompare(id){
+  const i=st.compare.indexOf(id);
+  if(i>-1)st.compare.splice(i,1); else { if(st.compare.length>=4){alert("Je kunt maximaal 4 scholen tegelijk vergelijken. Haal er eerst een weg.");return;} st.compare.push(id);}
+  save();renderAll();
+}
+function toggleShort(id){const i=st.short.indexOf(id); i>-1?st.short.splice(i,1):st.short.push(id); save();renderAll();}
+function scoreOf(id){
+  let tw=0,sum=0,n=0; const r=st.rate[id]||{};
+  st.crit.forEach(c=>{if(r[c.id]&&c.w>0){tw+=c.w;sum+=c.w*r[c.id];n++}});
+  return {v:tw?sum/tw:null,n};
+}
+function renderCompare(){
+  const el=document.getElementById("v-compare"), ids=st.compare.filter(id=>byId[id]);
+  if(!ids.length){el.innerHTML='<div class="empty"><strong>Nog niets om te vergelijken</strong>Tik bij twee tot vier scholen op Vergelijk.</div>';return;}
+  const cols=ids.map(id=>byId[id]);
+  const row=(label,fn)=>'<tr><th scope="row">'+label+'</th>'+cols.map(s=>'<td>'+fn(s)+'</td>').join("")+'</tr>';
+  el.innerHTML='<h2>Naast elkaar</h2><p class="sub">Schuif horizontaal als de tabel breder is dan je scherm. Rood gemarkeerd is het advies dat je bij de filters hebt gekozen.</p><div class="scroll"><table><thead><tr><th></th>'+
+    cols.map(s=>'<th scope="col">'+esc(s.n)+'<button class="x" data-cmp="'+s.id+'">Verwijder</button></th>').join("")+'</tr></thead><tbody>'+
+    row("Niveaus",s=>ladder(s,f.level)+'<div class="small" style="margin-top:6px">'+(s.lv.length?s.lv.map(k=>LV.find(l=>l.k===k).full).join(", "):"Apart traject")+'</div>')+
+    row("Richting",s=>esc(s.r))+
+    row("Aanpak",s=>esc(s.a))+
+    row("Soort",s=>typeLabel(s.type))+
+    row("Open dagen",s=>{const u=upcoming(s);return u.length?u.map(e=>'<b>'+fmtDate(e.d)+'</b> '+esc(e.t)+(e.a?' '+e.a+(e.b?'–'+e.b:''):'')).join("<br>"):'<a class="ext" href="https://www.google.com/search?q='+encodeURIComponent('open dag '+s.n+' Utrecht')+'" target="_blank" rel="noopener">Open dag opzoeken</a>'})+
+    row("Geslaagd",s=>{const e=examFor(s);if(!e)return '<span class="small">'+(st.exam?'Geen koppeling of geen examenklas':'Laad examencijfers bij Alle scholen')+'</span>';const nat=(st.exam.nat||EMBED_EXAM.nat);return EXL.filter(k=>e[k]&&e[k].kand).map(k=>LVN[k]+': <b>'+pctTxt(e[k])+'</b> <span class="small">('+e[k].kand+(e[k].approx?'+':'')+' kand.'+(nat[k]?', NL '+Math.round(nat[k].pct)+'%':'')+')</span>').join("<br>")||'<span class="small">Geen examenkandidaten met bekende aantallen</span>'})+
+    row("Gem. CE-cijfer",s=>{const e=examFor(s);if(!e)return '<span class="small">–</span>';const nat=(st.exam.nat||EMBED_EXAM.nat);return EXL.filter(k=>e[k]&&e[k].ce).map(k=>LVN[k]+': '+e[k].ce.toFixed(1).replace(".",",")+(nat[k]&&nat[k].ce?' <span class="small">(NL '+nat[k].ce.toFixed(1).replace(".",",")+')</span>':'')).join("<br>")||'<span class="small">–</span>'})+
+    row("Fietsen",s=>distTxt(s)+'<br><a class="ext" href="'+routeUrl(s)+'" target="_blank" rel="noopener">Exacte route</a>')+
+    row("Adres",s=>esc(s.addr||"Onbekend"))+
+    row("Kenmerken",s=>s.tags.map(esc).join("<br>"))+
+    row("Open dag",s=>st.visited[s.id]?"Bezocht":"Nog niet")+
+    row("Jouw score",s=>{const sc=scoreOf(s.id);return sc.v?'<strong>'+sc.v.toFixed(1)+'</strong> / 5':'<span class="small">Nog niet beoordeeld</span>'})+
+    row("Notities",s=>st.notes[s.id]?esc(st.notes[s.id]).replace(/\n/g,"<br>"):'<span class="small">Geen</span>')+
+    row("Meer",s=>'<a class="ext" href="'+s.u+'" target="_blank" rel="noopener">Cijfers en inspectie</a>')+
+  '</tbody></table></div>';
+}
+function renderWeigh(){
+  const el=document.getElementById("v-weigh"), ids=st.short.filter(id=>byId[id]);
+  const wl=["telt niet","beetje","belangrijk","zwaar"];
+  let h='<h2>Wat telt voor jullie</h2><p class="sub">Geef elk criterium een gewicht van 0 tot 3. Pas de namen aan of voeg je eigen criteria toe. Je keuzes blijven bewaard in deze browser.</p><div class="criteria">'+
+    st.crit.map(c=>'<div class="crit"><input type="text" value="'+esc(c.n)+'" data-cname="'+c.id+'" aria-label="Naam criterium"><div class="weight" role="group" aria-label="Gewicht">'+[0,1,2,3].map(w=>'<button aria-pressed="'+(c.w===w)+'" data-w="'+c.id+'" data-wv="'+w+'" title="'+wl[w]+'">'+w+'</button>').join("")+'</div><button class="x" data-cdel="'+c.id+'">Verwijder</button></div>').join("")+
+    '<div><button class="btn" id="addCrit">Criterium toevoegen</button></div></div>';
+  h+='<h2>Je shortlist</h2>';
+  if(!ids.length){h+='<div class="empty"><strong>Je shortlist is leeg</strong>Zet scholen op je shortlist vanuit Alle scholen en beoordeel ze hier na de open dag.</div>';}
+  else{
+    const sorted=[...ids].sort((a,b)=>(scoreOf(b).v??-1)-(scoreOf(a).v??-1));
+    h+='<p class="sub">Gesorteerd op jouw gewogen score. Beoordeel per criterium van 1 (slecht) tot 5 (uitstekend).</p><div class="rank">'+sorted.map(id=>{
+      const s=byId[id], sc=scoreOf(id), r=st.rate[id]||{};
+      return '<div class="rcard"><div class="rhead"><h3>'+esc(s.n)+'</h3><div class="score">'+(sc.v?sc.v.toFixed(1):'–')+' <small>/ 5</small></div></div>'+
+      '<div class="bar"><b style="width:'+(sc.v?sc.v/5*100:0)+'%"></b></div>'+
+      st.crit.filter(c=>c.w>0).map(c=>'<div class="rrow"><span>'+esc(c.n)+'</span><div class="rate" role="group" aria-label="'+esc(c.n)+'">'+[1,2,3,4,5].map(v=>'<button aria-pressed="'+(r[c.id]===v)+'" data-r="'+id+'" data-rc="'+c.id+'" data-rv="'+v+'">'+v+'</button>').join("")+'</div></div>').join("")+
+      '<div class="rrow"><label class="small"><input type="checkbox" data-vis="'+id+'"'+(st.visited[id]?' checked':'')+'> Open dag bezocht</label><button class="x" data-short="'+id+'">Van shortlist halen</button></div>'+
+      '<textarea placeholder="Notities: indruk, vragen, wat je kind ervan vond" data-note="'+id+'">'+esc(st.notes[id]||"")+'</textarea></div>';
+    }).join("")+'</div>';
+  }
+  h+='<div class="note"><strong>Tip voor de keuze.</strong> In Utrecht melden kinderen zich aan met een voorkeurslijst en bij populaire scholen wordt geloot. Zet daarom meerdere scholen op je lijst die je allemaal goed vindt, niet alleen je favoriet.</div>';
+  el.innerHTML=h;
+}
+function renderTray(){
+  const n=st.compare.length, tray=document.getElementById("tray");
+  document.getElementById("cCount").textContent=n;
+  document.getElementById("sCount").textContent=st.short.length;
+  const onList=!document.getElementById("v-list").classList.contains("hidden");
+  tray.classList.toggle("hidden",!(n>0&&onList));
+  document.getElementById("trayText").textContent=n===1?"1 school gekozen, kies er nog een":n+" scholen gekozen";
+  document.getElementById("trayGo").disabled=n<2;
+}
+
+/* ---- Examenresultaten (DUO open data) ---- */
+const EXL=["b","k","t","h","v"];
+const LVN={b:"vmbo-b",k:"vmbo-k",t:"vmbo-gt/mavo",h:"havo",v:"vwo"};
+const HINTS={cgu:["christelijk gymnasium","chr gymnasium","cgu"],usg:["stedelijk gymnasium","usg"],boni:["bonifatius"],greg:["gregorius"],tophavo:["tophavo","top havo"],descart:["descart"],globe:["globe"],rietveld:["rietveld"],lrc:["leidsche rijn"],volt:["volt"],amadeus:["amadeus"],limus:["limus"],tien:["tien"],unic:["unic"],x11:["x11"],mpower:["mpower","m power"],yuverta:["yuverta","wellant"],passie:["passie"],alamana:["amana"],waldorf:["waldorf","vrije school","vrijeschool"],"singel-hv":["singel","montessori","jordan"],"singel-mh":["singel","montessori","jordan"],kranenburg:["kranenburg"]};
+const num=v=>{v=(v||"").trim();return /^\d+$/.test(v)?+v:null};
+const dec=v=>{v=(v||"").trim().replace(",",".");return v&&!isNaN(+v)?+v:null};
+function parseLine(l){const out=[];let cur="",q=false;for(let i=0;i<l.length;i++){const c=l[i];if(c==='"'){if(q&&l[i+1]==='"'){cur+='"';i++}else q=!q}else if(c===";"&&!q){out.push(cur);cur=""}else cur+=c}out.push(cur);return out}
+function lvlOf(type,leerweg){type=(type||"").toUpperCase().trim();leerweg=(leerweg||"").toUpperCase().trim();if(type==="HAVO")return"h";if(type==="VWO")return"v";if(type==="VMBO"){if(leerweg==="BL")return"b";if(leerweg==="KL")return"k";if(leerweg==="GL"||leerweg==="TL")return"t"}return null}
+function parseDuo(text,fname){
+  const lines=text.split(/\r?\n/).filter(x=>x.trim());
+  const head=parseLine(lines[0]).map(h=>h.trim().toUpperCase());
+  const ix=n=>head.indexOf(n);
+  const I={code:ix("VESTIGINGSCODE"),name:ix("INSTELLINGSNAAM VESTIGING"),gem:ix("GEMEENTENAAM VESTIGING"),type:ix("ONDERWIJSTYPE VO"),lw:ix("LEERWEG VMBO"),k:ix("EXAMENKANDIDATEN"),g:ix("GESLAAGDEN"),ce:ix("GEMIDDELD CIJFER CENTRAAL EXAMEN")};
+  if(Object.values(I).some(v=>v<0))throw new Error("Dit is niet het DUO-bestand 'Geslaagden, gezakten en examencijfers'. Kies dat bestand (CSV) van de DUO-pagina.");
+  const ves={};
+  for(let i=1;i<lines.length;i++){
+    const r=parseLine(lines[i]); if((r[I.gem]||"").trim().toUpperCase()!=="UTRECHT")continue;
+    const L=lvlOf(r[I.type],r[I.lw]); if(!L)continue;
+    const code=r[I.code].trim(); const v=ves[code]||(ves[code]={name:r[I.name].trim(),lv:{}});
+    const a=v.lv[L]||(v.lv[L]={kand:0,gesl:0,ceW:0,ceN:0,approx:false});
+    const k=num(r[I.k]),g=num(r[I.g]),ce=dec(r[I.ce]);
+    if(k!=null&&g!=null){a.kand+=k;a.gesl+=g;if(ce!=null){a.ceW+=ce*k;a.ceN+=k}}else a.approx=true;
+  }
+  Object.values(ves).forEach(v=>Object.values(v.lv).forEach(a=>{a.ce=a.ceN?a.ceW/a.ceN:null;delete a.ceW;delete a.ceN}));
+  const m=(fname||"").match(/(20\d\d)[-_](20\d\d)/);
+  return {year:m?m[1]+"-"+m[2]:"onbekend jaar",ves};
+}
+function autoMap(){
+  if(!st.exam)return; const codes=Object.keys(st.exam.ves);
+  S.forEach(s=>{
+    if(st.emap[s.id]!==undefined)return;
+    const h=HINTS[s.id]; if(!h){return;}
+    const hit=codes.filter(c=>{const n=st.exam.ves[c].name.toLowerCase();return h.some(x=>n.includes(x))});
+    let pick=null;
+    if(hit.length===1)pick=hit[0];
+    else if(hit.length>1){ // kies de vestiging waarvan de niveaus het best overlappen met de school
+      const sc=c=>EXL.filter(k=>st.exam.ves[c].lv[k]).reduce((t,k)=>t+(s.lv.includes(k)?1:-1),0);
+      pick=hit.sort((a,b)=>sc(b)-sc(a))[0];
+    }
+    if(pick)st.emap[s.id]=pick;
+  });
+}
+function examFor(s){if(!st.exam)return null;const c=st.emap[s.id];return c&&st.exam.ves[c]?st.exam.ves[c].lv:null}
+const pctOf=a=>a&&a.kand?a.gesl/a.kand*100:null;
+const pctTxt=a=>{const p=pctOf(a);return p==null?"onbekend":Math.round(p)+"%"};
+function passOf(s){const e=examFor(s);if(!e)return null;
+  if(f.level){const k=f.level==="g"?"v":f.level;return e[k]?pctOf(e[k]):null}
+  let K=0,G=0;EXL.forEach(k=>{if(e[k]){K+=e[k].kand;G+=e[k].gesl}});return K?G/K*100:null}
+function examLine(s){
+  const e=examFor(s); if(!e)return "";
+  const nat=(st.exam.nat||EMBED_EXAM.nat);
+  const parts=EXL.filter(k=>e[k]&&e[k].kand).map(k=>{const p=pctOf(e[k]),n=nat[k]?nat[k].pct:null;const low=n!=null&&p<n-5;return LVN[k]+' <b class="'+(low?'pct-low':'')+'" title="Landelijk '+(n!=null?Math.round(n)+'%':'onbekend')+'">'+Math.round(p)+'%</b>'+(e[k].kand<20?'<span class="small">*</span>':'')});
+  return parts.length?'<p class="score-line">Geslaagd '+esc(st.exam.year)+': '+parts.join(", ")+'</p>':'<p class="score-line small">Nog geen examenresultaten</p>';
+}
+let showMap=false;
+function renderExam(){
+  const el=document.getElementById("examBox");
+  const duo='<a class="ext" href="https://duo.nl/open_onderwijsdata/voortgezet-onderwijs/examens/examens-vmbo-havo-vwo.jsp" target="_blank" rel="noopener">DUO open onderwijsdata</a>';
+  if(!st.exam){
+    el.innerHTML='<h3>Examenresultaten toevoegen</h3><p>Download bij '+duo+' onder "Geslaagden, gezakten en examencijfers" de nieuwste CSV en kies dat bestand hier. De app haalt er alleen de Utrechtse scholen uit en bewaart die in je browser.</p><div class="row"><label class="filebtn">CSV kiezen<input type="file" accept=".csv,text/csv" id="examFile"></label><span class="small" id="examMsg"></span></div>';
+  }else{
+    const n=Object.keys(st.exam.ves).length, linked=S.filter(s=>examFor(s)).length;
+    let h='<h3>Examenresultaten '+esc(st.exam.year)+(st.exam===EMBED_EXAM?' (DUO, ingebouwd)':'')+'</h3><p>'+n+' Utrechtse vestigingen, '+linked+' gekoppeld aan een school in deze lijst. Percentage is geslaagden gedeeld door examenkandidaten, over alle profielen samen. Rood betekent meer dan 5 procentpunt onder het landelijk gemiddelde voor dat niveau. Een * betekent minder dan 20 kandidaten: dan zegt één jaar weinig. Groepjes onder 5 leerlingen laat DUO weg.</p><div class="row"><button class="linkbtn" id="toggleMap">'+(showMap?'Koppelingen verbergen':'Koppelingen controleren')+'</button> &nbsp; <label class="linkbtn" style="cursor:pointer">Nieuwer DUO-bestand laden<input type="file" accept=".csv,text/csv" id="examFile" style="display:none"></label> &nbsp; <button class="linkbtn" id="examClear">Terug naar ingebouwde cijfers</button></div>';
+    if(showMap){
+      const codes=Object.keys(st.exam.ves).sort((a,b)=>st.exam.ves[a].name.localeCompare(st.exam.ves[b].name,"nl"));
+      const opt=c=>{const v=st.exam.ves[c];return esc(v.name)+' ('+c+': '+EXL.filter(k=>v.lv[k]).map(k=>LVN[k]).join(", ")+')'};
+      h+='<div class="maptbl">'+S.filter(s=>!s.type||s.type==="vso").map(s=>'<label><span>'+esc(s.n)+'</span><select data-emap="'+s.id+'"><option value="">Geen</option>'+codes.map(c=>'<option value="'+c+'"'+(st.emap[s.id]===c?' selected':'')+'>'+opt(c)+'</option>').join("")+'</select></label>').join("")+'</div>';
+    }
+    el.innerHTML=h;
+  }
+  const fi=document.getElementById("examFile");
+  if(fi)fi.onchange=e=>{const file=e.target.files[0];if(!file)return;const msg=document.getElementById("examMsg");if(msg)msg.textContent="Bezig met inlezen...";
+    const rd=new FileReader();rd.onload=()=>{try{st.exam=parseDuo(rd.result,file.name);st.emap={};Object.entries(DEFAULT_EMAP).forEach(([k,c])=>{if(st.exam.ves[c])st.emap[k]=c});autoMap();save();renderAll()}catch(err){if(msg)msg.textContent=err.message;else alert(err.message)}};rd.readAsText(file);};
+  const tm=document.getElementById("toggleMap"); if(tm)tm.onclick=()=>{showMap=!showMap;renderExam()};
+  const ec=document.getElementById("examClear"); if(ec)ec.onclick=()=>{st.exam=EMBED_EXAM;st.emap=Object.assign({},DEFAULT_EMAP);save();renderAll()};
+}
+
+
+/* ---- Open dagen (bron: De VO Gids Open Dagen Planner, opgehaald 5-11-2026) ---- */
+const EV_RAW={}; /* geen overgenomen open-dagendata in de openbare versie, zie renderAgenda */
+const BIG=/open (dag|huis|avond)/i;
+const EVENTS=[];Object.entries(EV_RAW).forEach(([id,arr])=>arr.forEach(r=>{if(byId[id])EVENTS.push({id,d:r[0],t:r[1],a:r[2],b:r[3],note:r[4],big:BIG.test(r[1])})}));
+const todayISO=(()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")})();
+const upcoming=s=>EVENTS.filter(e=>e.id===s.id&&e.d>=todayISO).sort((a,b)=>(a.d+a.a).localeCompare(b.d+b.a));
+const DOW=["zo","ma","di","wo","do","vr","za"],MON=["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
+const pd=iso=>{const[y,m,d]=iso.split("-").map(Number);return new Date(y,m-1,d)};
+const fmtDate=iso=>{const d=pd(iso);return DOW[d.getDay()]+" "+d.getDate()+" "+MON[d.getMonth()]+(d.getFullYear()!==new Date().getFullYear()?" "+d.getFullYear():"")};
+function nextLine(s){const u=upcoming(s);if(!u.length)return "";const e=u.find(x=>x.big)||u[0];
+  return '<p class="next-line">'+(e.d===todayISO?'<b class="pct-low">Vandaag</b>: ':'Volgende open activiteit: <b>'+fmtDate(e.d)+'</b>, ')+esc(e.t)+(e.a?' '+e.a+(e.b?'–'+e.b:''):'')+'</p>';}
+function gcal(e){const s=byId[e.id];const D=e.d.replace(/-/g,"");let dates;
+  if(e.a){const t1=e.a.replace(":","")+"00",t2=(e.b||e.a).replace(":","")+"00";dates=D+"T"+t1+"/"+D+"T"+(e.b?t2:String(+e.a.slice(0,2)+2).padStart(2,"0")+e.a.slice(3)+"00");}
+  else{const n=pd(e.d);n.setDate(n.getDate()+1);dates=D+"/"+n.getFullYear()+String(n.getMonth()+1).padStart(2,"0")+String(n.getDate()).padStart(2,"0");}
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE&ctz=Europe/Amsterdam&text="+encodeURIComponent(e.t+" "+s.n)+"&dates="+dates+"&location="+encodeURIComponent((s.addr||"")+" Utrecht")+"&details="+encodeURIComponent((e.note||"")+"\nControleer tijden en aanmelden op de website van de school.");}
+const ag={scope:"all",big:false,fromList:false};
+const PLANNER="https://www.devogids.nl/middelbare-scholen/open-dagen?zoekcriteria=Utrecht&kilometer=10";
+function renderAgenda(){
+  const el=document.getElementById("v-agenda");
+  if(!EVENTS.length){
+    const list=visible().filter(s=>!s.type||s.type==="part");
+    el.innerHTML='<h2>Open dagen en informatieavonden</h2><p class="sub">De actuele data staan in de Open Dagen Planner van De VO Gids. Daar kun je filteren op niveau, datum en afstand en een overzicht als pdf maken. Zoek per school ook altijd even op de eigen site, want daar staat of je je moet aanmelden.</p><p><a class="btn primary" style="display:inline-block;text-decoration:none" href="'+PLANNER+'" target="_blank" rel="noopener">Open Dagen Planner Utrecht</a></p>'+
+      '<h3 class="ag-month">Per school</h3>'+list.map(s=>'<div class="ev"><div class="evd"><b style="font-size:1.1rem">'+(s.min!=null?s.min+'′':'')+'</b><span>'+(s.min!=null?'fietsen':'')+'</span></div><div><h4>'+esc(s.n)+'</h4><div class="ext"><a href="https://www.google.com/search?q='+encodeURIComponent('open dag '+s.n+' Utrecht')+'" target="_blank" rel="noopener">Open dag opzoeken</a> &nbsp; <a href="'+s.u+'" target="_blank" rel="noopener">Scholen op de kaart</a> &nbsp; <label class="small"><input type="checkbox" data-vis="'+s.id+'"'+(st.visited[s.id]?' checked':'')+'> Open dag bezocht</label></div></div></div>').join("");
+    return;
+  }
+  const visIds=new Set(visible().map(s=>s.id));
+  let evs=EVENTS.filter(e=>e.d>=todayISO&&!st.hidden.includes(e.id));
+  if(ag.scope==="short")evs=evs.filter(e=>st.short.includes(e.id));
+  if(ag.fromList)evs=evs.filter(e=>visIds.has(e.id));
+  if(ag.big)evs=evs.filter(e=>e.big);
+  evs.sort((a,b)=>(a.d+a.a).localeCompare(b.d+b.a));
+  const chip=(k,v,l,on)=>'<button class="chip" aria-pressed="'+on+'" data-ag="'+k+'" data-agv="'+v+'">'+l+'</button>';
+  let h='<h2>Open dagen en informatieavonden</h2><p class="sub">Alle komende activiteiten van de scholen in deze app, tot en met de zomer van 2027. Rood gemarkeerd zijn de grote open dagen en open avonden. Controleer tijden en eventuele aanmelding altijd op de site van de school.</p>'+
+   '<div class="frow" style="margin-bottom:8px">'+chip("scope","all","Alle scholen",ag.scope==="all")+chip("scope","short","Alleen shortlist ("+st.short.length+")",ag.scope==="short")+chip("big","1","Alleen open dagen en avonden",ag.big)+chip("fromList","1","Volg filters van Alle scholen",ag.fromList)+'</div>';
+  if(!evs.length){h+='<div class="empty"><strong>Geen activiteiten gevonden</strong>'+(ag.scope==="short"?'Zet scholen op je shortlist of kies Alle scholen.':'Pas de filters aan.')+'</div>';el.innerHTML=h;return;}
+  let month="";
+  evs.forEach(e=>{const s=byId[e.id],d=pd(e.d);const m=d.toLocaleDateString("nl-NL",{month:"long",year:"numeric"});
+    if(m!==month){month=m;h+='<h3 class="ag-month">'+m+'</h3>';}
+    h+='<div class="ev'+(e.big?' big':'')+(e.d===todayISO?' today':'')+'"><div class="evd"><span>'+DOW[d.getDay()]+'</span><b>'+d.getDate()+'</b><span>'+MON[d.getMonth()]+'</span></div><div>'+
+      '<h4>'+esc(s.n)+'</h4><p><b style="color:var(--ink)">'+esc(e.t)+'</b>'+(e.a?', '+e.a+(e.b?'–'+e.b:''):', tijd: zie website')+(s.min!=null?', '+s.min+' min fietsen':'')+'</p>'+
+      (e.note?'<p>'+esc(e.note)+'</p>':'')+
+      '<div class="ext"><a href="'+gcal(e)+'" target="_blank" rel="noopener">In Google Agenda</a> &nbsp; <a href="'+routeUrl(s)+'" target="_blank" rel="noopener">Fietsroute</a> &nbsp; <button class="linkbtn" data-short="'+s.id+'">'+(st.short.includes(s.id)?'Van shortlist halen':'Op shortlist')+'</button></div></div></div>';});
+  const missing=S.filter(s=>!s.type&&!EVENTS.some(e=>e.id===s.id)).map(s=>s.n);
+  h+='<div class="note"><strong>Niet in de agenda.</strong> Van '+missing.join(", ")+' stonden geen data in de opgehaalde lijst. Dat komt waarschijnlijk door het filter (zonder categoraal gymnasium en praktijkonderwijs). Kijk voor deze scholen op hun eigen site.</div>';
+  el.innerHTML=h;
+}
+
+
+/* ---- Thuisadres (PDOK Locatieserver, alleen opgeslagen in deze browser) ---- */
+function renderHome(){
+  const el=document.getElementById("homeBox");
+  if(HOME){el.innerHTML='<h3>Fietstijd vanaf '+esc(st.home.label||"thuis")+'</h3><p>Je adres staat alleen in deze browser en wordt nergens naartoe gestuurd. Alleen bij het opzoeken gaat je postcode en huisnummer eenmalig naar de PDOK Locatieserver van de overheid.</p><div class="row"><button class="linkbtn" id="homeEdit">Ander adres</button> &nbsp; <button class="linkbtn" id="homeClear">Adres wissen</button></div>';
+    document.getElementById("homeEdit").onclick=()=>{HOME=null;renderHome();el.dataset.edit="1";renderHomeForm(el)};
+    document.getElementById("homeClear").onclick=()=>{delete st.home;HOME=null;recalcDist();if(f.sort==="dist")f.sort="name";document.getElementById("sort").value=f.sort;save();renderAll()};
+    return;}
+  renderHomeForm(el);
+}
+function renderHomeForm(el){
+  el.innerHTML='<h3>Fietstijd vanaf jouw huis</h3><p>Vul postcode en huisnummer in. De app berekent dan per school de fietsafstand. Je adres blijft in deze browser.</p><div class="row"><input class="sel" id="pc" placeholder="Postcode" maxlength="7" size="8" autocomplete="postal-code"> <input class="sel" id="hn" placeholder="Nr." size="5"> <button class="btn primary" id="homeGo">Opzoeken</button> <span class="small" id="homeMsg"></span></div>';
+  const go=async()=>{const pc=document.getElementById("pc").value.replace(/\s/g,"").toUpperCase(),hn=document.getElementById("hn").value.trim(),msg=document.getElementById("homeMsg");
+    if(!/^\d{4}[A-Z]{2}$/.test(pc)||!hn){msg.textContent="Vul een geldige postcode (1234AB) en huisnummer in.";return;}
+    msg.textContent="Bezig met opzoeken...";
+    try{const r=await fetch("https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?fq=type:adres&fq=postcode:"+pc+"&fq=huisnummer:"+(parseInt(hn,10)||0)+"&rows=1&q="+encodeURIComponent(pc+" "+hn));const j=await r.json();const d=j.response&&j.response.docs&&j.response.docs[0];
+      if(!d||!d.centroide_ll){msg.textContent="Adres niet gevonden. Klopt de postcode en het huisnummer?";return;}
+      const m=d.centroide_ll.match(/POINT\(([\d.]+) ([\d.]+)\)/);st.home={lat:+m[2],lng:+m[1],label:d.straatnaam?d.straatnaam+" "+(d.huis_nlt||hn):pc};
+      HOME=st.home;recalcDist();f.sort="dist";document.getElementById("sort").value="dist";save();renderAll();
+    }catch(e){msg.textContent="Opzoeken lukt nu niet. Probeer het later opnieuw.";}};
+  document.getElementById("homeGo").onclick=go;
+  el.querySelectorAll("input").forEach(i=>i.onkeydown=e=>{if(e.key==="Enter")go()});
+}
+/* ---- Export en import van eigen keuzes ---- */
+function exportData(){
+  const data=Object.assign({},st);if(data.exam===EMBED_EXAM)data.exam=null;
+  const blob=new Blob([JSON.stringify({app:"vo-utrecht",version:1,exported:new Date().toISOString(),data},null,1)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="mijn-schoolkeuze-"+todayISO+".json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
+function importData(file){
+  const rd=new FileReader();rd.onload=()=>{try{const j=JSON.parse(rd.result);if(j.app!=="vo-utrecht"||!j.data)throw 0;
+    if(!confirm("Je huidige keuzes in deze browser worden vervangen door die uit het bestand. Doorgaan?"))return;
+    st=Object.assign({compare:[],short:[],crit:DEFAULT_CRIT,rate:{},notes:{},visited:{},exam:null,emap:{},hidden:[]},j.data);
+    if(!st.exam){st.exam=EMBED_EXAM;if(!Object.keys(st.emap||{}).length)st.emap=Object.assign({},DEFAULT_EMAP);}
+    HOME=st.home||null;recalcDist();save();renderAll();alert("Keuzes geladen.");
+  }catch(e){alert("Dit is geen geldig bestand van deze app.")}};rd.readAsText(file);
+}
+
+function renderAll(){renderHome();renderExam();renderFilters();renderList();renderAgenda();renderCompare();renderWeigh();renderTray();}
+function show(view){
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.view===view));
+  ["list","agenda","compare","weigh"].forEach(v=>document.getElementById("v-"+v).classList.toggle("hidden",v!==view));
+  renderTray(); window.scrollTo({top:0});
+}
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.view));
+document.getElementById("trayGo").onclick=()=>show("compare");
+document.getElementById("expBtn").onclick=exportData;
+document.getElementById("impFile").onchange=e=>{if(e.target.files[0])importData(e.target.files[0]);e.target.value=""};
+document.getElementById("sort").onchange=e=>{f.sort=e.target.value;renderList()};
+document.getElementById("q").oninput=e=>{f.q=e.target.value;renderList()};
+["tPart","tInt","tVso"].forEach((id,i)=>document.getElementById(id).onchange=e=>{f[["part","int","vso"][i]]=e.target.checked;renderAll()});
+document.getElementById("tHid").onchange=e=>{f.showHidden=e.target.checked;renderList()};
+document.getElementById("reset").onclick=()=>{f.showHidden=false;f.q="";f.maxMin=null;f.level=null;f.richting.clear();f.aanpak.clear();f.part=f.int=f.vso=false;document.getElementById("q").value="";["tPart","tInt","tVso"].forEach(id=>document.getElementById(id).checked=false);renderAll()};
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  if(b.dataset.ag){const k=b.dataset.ag;if(k==="scope")ag.scope=b.dataset.agv;else ag[k]=!ag[k];renderAgenda();return;}
+  if(b.dataset.cmp){toggleCompare(b.dataset.cmp);return;}
+  if(b.dataset.short){toggleShort(b.dataset.short);return;}
+  if(b.dataset.hide){const id=b.dataset.hide;if(!st.hidden.includes(id))st.hidden.push(id);st.compare=st.compare.filter(x=>x!==id);save();renderAll();return;}
+  if(b.dataset.unhide){st.hidden=st.hidden.filter(x=>x!==b.dataset.unhide);if(!st.hidden.length)f.showHidden=false;save();renderAll();return;}
+  if(b.dataset.w){const c=st.crit.find(c=>c.id===b.dataset.w);c.w=+b.dataset.wv;save();renderWeigh();renderCompare();return;}
+  if(b.dataset.r){const id=b.dataset.r;st.rate[id]=st.rate[id]||{};const v=+b.dataset.rv;st.rate[id][b.dataset.rc]=st.rate[id][b.dataset.rc]===v?undefined:v;save();renderWeigh();renderCompare();return;}
+  if(b.dataset.cdel){st.crit=st.crit.filter(c=>c.id!==b.dataset.cdel);save();renderWeigh();renderCompare();return;}
+  if(b.id==="addCrit"){st.crit.push({id:"c"+Date.now(),n:"Nieuw criterium",w:2});save();renderWeigh();const ins=document.querySelectorAll("[data-cname]");ins[ins.length-1].select();return;}
+});
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.dataset.emap!==undefined){st.emap[t.dataset.emap]=t.value||null;save();renderList();renderCompare();return;}
+  if(t.dataset.vis){st.visited[t.dataset.vis]=t.checked;save();renderCompare();}
+  if(t.dataset.cname){const c=st.crit.find(c=>c.id===t.dataset.cname);c.n=t.value.trim()||"Criterium";save();renderWeigh();renderCompare();}
+});
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.dataset.note){st.notes[t.dataset.note]=t.value;save();renderCompare();}
+});
+renderAll();
+</script>
+</body>
+</html>
