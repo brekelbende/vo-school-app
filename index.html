@@ -397,7 +397,11 @@ function renderList(){
   const nh=st.hidden.filter(id=>byId[id]).length;
   document.getElementById("hidCount").textContent=nh?"("+nh+")":"";
   document.getElementById("tHid").checked=!!f.showHidden;
-  document.getElementById("rCount").textContent=f.showHidden?nh+(nh===1?" weggefilterde school":" weggefilterde scholen"):v.length+" van "+S.length+" scholen"+(nh?", "+nh+" weggefilterd":"");
+  const off=S.filter(s=>(s.type==="part"&&!f.part)||(s.type==="int"&&!f.int)||(s.type==="vso"&&!f.vso)).length;
+  const rc=document.getElementById("rCount");
+  if(f.showHidden)rc.textContent=nh+(nh===1?" weggefilterde school":" weggefilterde scholen");
+  else{rc.innerHTML=v.length+" van "+S.length+" scholen"+(nh?", "+nh+" weggefilterd":"")+(off?' &nbsp; <button class="linkbtn" id="showAllTypes">Toon ook de '+off+' particuliere, internationale en speciale scholen</button>':"");
+    const sa=document.getElementById("showAllTypes");if(sa)sa.onclick=()=>{f.part=f.int=f.vso=true;["tPart","tInt","tVso"].forEach(id=>document.getElementById(id).checked=true);renderAll()};}
   document.getElementById("list").innerHTML=v.length?v.map(card).join(""):(f.showHidden?'<div class="empty"><strong>Je hebt nog geen scholen weggefilterd</strong>Gebruik de knop Wegfilteren op een schoolkaart.</div>':'<div class="empty"><strong>Geen school past bij deze filters</strong>Haal een filter weg of zet een extra schoolsoort aan.</div>');
 }
 function toggleCompare(id){
