@@ -107,10 +107,12 @@ section.view{padding:20px 0 120px}
 .fold>summary h2{display:inline;margin:0}
 .fold .tag{font-family:var(--body);font-weight:400}
 .fold-body{display:grid;gap:14px}
+.tab .ts{display:none}
 @media (max-width:600px){
   nav.tabs .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:0;overflow:visible}
   .tab{padding:12px 2px 10px;font-size:.88rem;text-align:center;white-space:normal;line-height:1.15;border-bottom-width:3px}
   .tab .tl{display:none}
+  .tab .ts{display:inline}
   .tab .count{display:block;width:max-content;margin:4px auto 0;font-size:.75rem}
 }
 .linkbtn{background:none;border:0;color:var(--canal);text-decoration:underline;cursor:pointer;padding:0}
@@ -195,10 +197,10 @@ footer{color:var(--muted);font-size:.85rem;padding:0 0 40px}
 
 <nav class="tabs" aria-label="Weergave">
   <div class="wrap" role="tablist">
-    <button class="tab" role="tab" data-view="list" aria-selected="true"><span class="tl">Alle </span>scholen</button>
+    <button class="tab" role="tab" data-view="list" aria-selected="true"><span class="tl">Alle scholen</span><span class="ts">Scholen</span></button>
     <button class="tab" role="tab" data-view="compare" aria-selected="false">Vergelijken <span class="count" id="cCount">0</span></button>
     <button class="tab" role="tab" data-view="agenda" aria-selected="false">Open dagen</button>
-    <button class="tab" role="tab" data-view="weigh" aria-selected="false"><span class="tl">Mijn </span>afweging <span class="count" id="sCount">0</span></button>
+    <button class="tab" role="tab" data-view="weigh" aria-selected="false"><span class="tl">Mijn afweging</span><span class="ts">Afweging</span> <span class="count" id="sCount">0</span></button>
   </div>
 </nav>
 
