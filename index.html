@@ -88,6 +88,17 @@ section.view{padding:20px 0 120px}
 .ev p{margin:2px 0 0;font-size:.9rem;color:var(--muted)}
 .ev .ext{margin-top:6px}
 .next-line{margin:0;font-size:.92rem}
+.modal{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal>div{background:var(--card);color:var(--ink);border-radius:14px;max-width:460px;width:100%;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.modal h3{font-family:var(--display);margin:0 0 8px;font-size:1.2rem}
+.modal p{margin:0 0 12px;color:var(--muted)}
+.modal .row{display:flex;gap:8px;flex-wrap:wrap}
+.modal input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);margin-bottom:12px}
+.pscores{display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem;color:var(--muted);margin-top:-4px}
+.pscores b{color:var(--ink)}
+.pnote{margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--canal-soft);font-size:.9rem}
+.pnote b{color:var(--canal)}
+.sharebar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
 .linkbtn{background:none;border:0;color:var(--canal);text-decoration:underline;cursor:pointer;padding:0}
 
 .list{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
@@ -208,7 +219,7 @@ footer{color:var(--muted);font-size:.85rem;padding:0 0 40px}
 </div>
 
 <footer class="wrap">
-  <p style="margin:0 0 12px"><b style="color:var(--ink)">Mijn keuzes</b> (shortlist, scores, notities, adres) staan alleen in deze browser. <button class="linkbtn" id="expBtn">Opslaan als bestand</button> &nbsp; <label class="linkbtn" style="cursor:pointer">Bestand laden<input type="file" accept=".json,application/json" id="impFile" style="display:none"></label><br><span>Handig als back-up, om naar een ander apparaat over te stappen of om je lijst met je partner te delen.</span></p>
+  <p style="margin:0 0 12px"><b style="color:var(--ink)">Mijn keuzes</b> (shortlist, scores, notities, adres) staan alleen in deze browser. <button class="linkbtn" id="footShare">Deel met partner</button> &nbsp; <button class="linkbtn" id="expBtn">Opslaan als bestand</button> &nbsp; <label class="linkbtn" style="cursor:pointer">Bestand laden<input type="file" accept=".json,application/json" id="impFile" style="display:none"></label><br><span>Met Deel met partner stuur je je lijst als link via WhatsApp; de gegevens zitten in de link zelf en gaan niet via een server. Het bestand is handig als back-up.</span></p>
   Deze app is een hulpmiddel van een ouder voor ouders, geen officiële bron. Examencijfers: DUO Open Onderwijsdata, examenjaar 2024-2025 (CC-BY 4.0). Adressen opgezocht via Google Maps, je eigen adres via PDOK Locatieserver. Bron schoollijst: Scholen op de kaart en De VO Gids (oktober 2026). Niveaus en kenmerken zijn een startpunt, geen officiële registratie. Slagingspercentages, inspectieoordeel en leerlingaantallen vind je per school via de link Scholen op de kaart. Fietsafstand is een schatting: hemelsbrede afstand maal 1,3 voor omrijden, bij 15 km/u. De link Fietsroute geeft de exacte route.
 </footer>
 
@@ -417,21 +428,30 @@ function renderWeigh(){
   let h='<h2>Wat telt voor jullie</h2><p class="sub">Geef elk criterium een gewicht van 0 tot 3. Pas de namen aan of voeg je eigen criteria toe. Je keuzes blijven bewaard in deze browser.</p><div class="criteria">'+
     st.crit.map(c=>'<div class="crit"><input type="text" value="'+esc(c.n)+'" data-cname="'+c.id+'" aria-label="Naam criterium"><div class="weight" role="group" aria-label="Gewicht">'+[0,1,2,3].map(w=>'<button aria-pressed="'+(c.w===w)+'" data-w="'+c.id+'" data-wv="'+w+'" title="'+wl[w]+'">'+w+'</button>').join("")+'</div><button class="x" data-cdel="'+c.id+'">Verwijder</button></div>').join("")+
     '<div><button class="btn" id="addCrit">Criterium toevoegen</button></div></div>';
-  h+='<h2>Je shortlist</h2>';
+  const partners=Object.keys(st.others||{});
+  h+='<h2>Je shortlist</h2><div class="sharebar"><button class="btn primary" id="shareBtn">Deel met partner</button><button class="btn" id="sumBtn">Samenvatting delen</button>'+(partners.length?'<button class="btn" id="dropPartners">Lijst van '+esc(partners.join(" en "))+' verwijderen</button>':'')+'</div>';
   if(!ids.length){h+='<div class="empty"><strong>Je shortlist is leeg</strong>Zet scholen op je shortlist vanuit Alle scholen en beoordeel ze hier na de open dag.</div>';}
   else{
-    const sorted=[...ids].sort((a,b)=>(scoreOf(b).v??-1)-(scoreOf(a).v??-1));
-    h+='<p class="sub">Gesorteerd op jouw gewogen score. Beoordeel per criterium van 1 (slecht) tot 5 (uitstekend).</p><div class="rank">'+sorted.map(id=>{
+    const sorted=[...ids].sort((a,b)=>(avgScore(b)??-1)-(avgScore(a)??-1));
+    h+='<p class="sub">Gesorteerd op '+(partners.length?'het gemiddelde van jullie scores':'jouw gewogen score')+'. Beoordeel per criterium van 1 (slecht) tot 5 (uitstekend).</p><div class="rank">'+sorted.map(id=>{
+      const ps=partnerScores(id), myv=scoreOf(id).v, av=avgScore(id);
+      const pline=partners.length?'<div class="pscores"><span>'+esc(st.me||"Jij")+': <b>'+(myv?myv.toFixed(1).replace(".",","):'–')+'</b></span>'+ps.map(p=>'<span>'+esc(p.n)+': <b>'+(p.v?p.v.toFixed(1).replace(".",","):'–')+'</b></span>').join("")+(myv&&ps.some(p=>p.v&&Math.abs(p.v-myv)>=1)?'<span class="pct-low">Jullie verschillen hier flink</span>':'')+'</div>':'';
+      const pnotes=ps.filter(p=>p.note).map(p=>'<div class="pnote"><b>'+esc(p.n)+':</b> '+esc(p.note).replace(/\n/g,"<br>")+'</div>').join("");
       const s=byId[id], sc=scoreOf(id), r=st.rate[id]||{};
-      return '<div class="rcard"><div class="rhead"><h3>'+esc(s.n)+'</h3><div class="score">'+(sc.v?sc.v.toFixed(1):'–')+' <small>/ 5</small></div></div>'+
-      '<div class="bar"><b style="width:'+(sc.v?sc.v/5*100:0)+'%"></b></div>'+
+      const shown=partners.length?av:sc.v;
+      return '<div class="rcard"><div class="rhead"><h3>'+esc(s.n)+'</h3><div class="score">'+(shown?shown.toFixed(1).replace(".",","):'–')+' <small>/ 5'+(partners.length?' gem.':'')+'</small></div></div>'+
+      '<div class="bar"><b style="width:'+(shown?shown/5*100:0)+'%"></b></div>'+pline+
       st.crit.filter(c=>c.w>0).map(c=>'<div class="rrow"><span>'+esc(c.n)+'</span><div class="rate" role="group" aria-label="'+esc(c.n)+'">'+[1,2,3,4,5].map(v=>'<button aria-pressed="'+(r[c.id]===v)+'" data-r="'+id+'" data-rc="'+c.id+'" data-rv="'+v+'">'+v+'</button>').join("")+'</div></div>').join("")+
       '<div class="rrow"><label class="small"><input type="checkbox" data-vis="'+id+'"'+(st.visited[id]?' checked':'')+'> Open dag bezocht</label><button class="x" data-short="'+id+'">Van shortlist halen</button></div>'+
-      '<textarea placeholder="Notities: indruk, vragen, wat je kind ervan vond" data-note="'+id+'">'+esc(st.notes[id]||"")+'</textarea></div>';
+      '<textarea placeholder="Notities: indruk, vragen, wat je kind ervan vond" data-note="'+id+'">'+esc(st.notes[id]||"")+'</textarea>'+pnotes+'</div>';
     }).join("")+'</div>';
   }
   h+='<div class="note"><strong>Tip voor de keuze.</strong> In Utrecht melden kinderen zich aan met een voorkeurslijst en bij populaire scholen wordt geloot. Zet daarom meerdere scholen op je lijst die je allemaal goed vindt, niet alleen je favoriet.</div>';
   el.innerHTML=h;
+  document.getElementById("shareBtn").onclick=shareList;
+  document.getElementById("sumBtn").onclick=copySummary;
+  const dp=document.getElementById("dropPartners");if(dp)dp.onclick=()=>{if(confirm("Scores en notities van "+partners.join(" en ")+" verwijderen? Hun scholen blijven op je shortlist."))
+    {st.others={};save();renderAll();}};
 }
 function renderTray(){
   const n=st.compare.length, tray=document.getElementById("tray");
@@ -606,6 +626,62 @@ function importData(file){
   }catch(e){alert("Dit is geen geldig bestand van deze app.")}};rd.readAsText(file);
 }
 
+
+/* ---- Delen met partner: deellink (#d=...) en samenvoegen, zonder server ---- */
+const b64u={enc:u8=>{let s="";for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")},
+  dec:t=>{t=t.replace(/-/g,"+").replace(/_/g,"/");while(t.length%4)t+="=";const b=atob(t),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}};
+async function packShare(obj){const raw=new TextEncoder().encode(JSON.stringify(obj));
+  if(window.CompressionStream){const z=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer());return "z"+b64u.enc(z);}
+  return "j"+b64u.enc(raw);}
+async function unpackShare(t){const kind=t[0],u=b64u.dec(t.slice(1));let raw=u;
+  if(kind==="z"){if(!window.DecompressionStream)throw new Error("Je browser kan deze link niet openen.");raw=new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());}
+  return JSON.parse(new TextDecoder().decode(raw));}
+function myPayload(){return {app:"vo-utrecht",v:1,from:st.me||"Partner",at:new Date().toISOString(),short:st.short,visited:Object.keys(st.visited).filter(k=>st.visited[k]),crit:st.crit,rate:st.rate,notes:st.notes};}
+function scoreWith(crit,rate){let tw=0,sum=0;crit.forEach(c=>{const v=rate&&rate[c.id];if(v&&c.w>0){tw+=c.w;sum+=c.w*v}});return tw?sum/tw:null}
+function partnerScores(id){return Object.entries(st.others||{}).map(([n,o])=>({n,v:scoreWith(o.crit||[],(o.rate||{})[id]),note:(o.notes||{})[id]}));}
+function avgScore(id){const all=[scoreOf(id).v,...partnerScores(id).map(p=>p.v)].filter(v=>v!=null);return all.length?all.reduce((a,b)=>a+b,0)/all.length:null}
+function modal(html){const m=document.createElement("div");m.className="modal";m.innerHTML="<div>"+html+"</div>";document.body.appendChild(m);m.addEventListener("click",e=>{if(e.target===m)m.remove()});return m}
+function askName(){return new Promise(res=>{if(st.me)return res(st.me);
+  const m=modal('<h3>Hoe heet je?</h3><p>Dan ziet je partner bij elke score en notitie van wie die is.</p><input id="meName" placeholder="Bijvoorbeeld Paul" maxlength="30"><div class="row"><button class="btn primary" id="meOk">Verder</button><button class="btn" id="meNo">Annuleren</button></div>');
+  const inp=m.querySelector("#meName");inp.focus();
+  const ok=()=>{const v=inp.value.trim();if(!v)return;st.me=v;save();m.remove();res(v)};
+  m.querySelector("#meOk").onclick=ok;inp.onkeydown=e=>{if(e.key==="Enter")ok()};m.querySelector("#meNo").onclick=()=>{m.remove();res(null)};});}
+function summaryText(){const ids=[...st.short].filter(id=>byId[id]).sort((a,b)=>(avgScore(b)??-1)-(avgScore(a)??-1));
+  if(!ids.length)return "Mijn shortlist is nog leeg.";
+  return (st.me?st.me+"s":"Mijn")+" shortlist middelbare scholen Utrecht:\n"+ids.map((id,i)=>{const s=byId[id],sc=scoreOf(id).v,e=examFor(s);
+    const parts=[];if(sc)parts.push(sc.toFixed(1).replace(".",",")+"/5");if(s.min!=null)parts.push(s.min+" min fietsen");
+    if(e){const lv=EXL.filter(k=>e[k]&&e[k].kand).slice(-2).map(k=>LVN[k]+" "+Math.round(pctOf(e[k]))+"%");if(lv.length)parts.push("geslaagd "+lv.join(", "));}
+    return (i+1)+". "+s.n+(parts.length?" ("+parts.join(", ")+")":"")}).join("\n");}
+async function shareList(){const me=await askName();if(!me)return;
+  const url=location.origin+location.pathname+"#d="+await packShare(myPayload());
+  const text=summaryText()+"\n\nOpen mijn lijst in de app (je kunt hem samenvoegen met de jouwe):";
+  if(navigator.share){try{await navigator.share({title:"Shortlist middelbare scholen",text,url});return}catch(e){if(e.name==="AbortError")return}}
+  const full=text+"\n"+url;
+  try{await navigator.clipboard.writeText(full);modal('<h3>Gekopieerd</h3><p>Het bericht met de link staat op je klembord. Plak het in WhatsApp of een mail.</p><div class="row"><button class="btn primary" onclick="this.closest(\'.modal\').remove()">Oké</button></div>')}
+  catch(e){const m=modal('<h3>Kopieer dit bericht</h3><textarea style="min-height:160px">'+esc(full)+'</textarea><div class="row" style="margin-top:8px"><button class="btn primary" onclick="this.closest(\'.modal\').remove()">Sluiten</button></div>');m.querySelector("textarea").select();}}
+async function copySummary(){const t=summaryText();
+  if(navigator.share){try{await navigator.share({title:"Shortlist middelbare scholen",text:t});return}catch(e){if(e.name==="AbortError")return}}
+  try{await navigator.clipboard.writeText(t);modal('<h3>Gekopieerd</h3><p>De samenvatting staat op je klembord.</p><div class="row"><button class="btn primary" onclick="this.closest(\'.modal\').remove()">Oké</button></div>')}catch(e){modal('<h3>Samenvatting</h3><textarea style="min-height:160px">'+esc(t)+'</textarea>')}}
+function mergeIn(p){
+  st.others=st.others||{};
+  st.others[p.from]={crit:p.crit||[],rate:p.rate||{},notes:p.notes||{},at:p.at};
+  (p.short||[]).forEach(id=>{if(byId[id]&&!st.short.includes(id))st.short.push(id)});
+  (p.visited||[]).forEach(id=>{st.visited[id]=true});
+}
+function replaceWith(p){st.short=(p.short||[]).filter(id=>byId[id]);st.crit=p.crit&&p.crit.length?p.crit:DEFAULT_CRIT;st.rate=p.rate||{};st.notes=p.notes||{};st.visited={};(p.visited||[]).forEach(id=>st.visited[id]=true);}
+async function checkIncoming(){
+  if(!location.hash.startsWith("#d="))return;
+  const code=location.hash.slice(3);history.replaceState(null,"",location.pathname+location.search);
+  let p;try{p=await unpackShare(code);if(p.app!=="vo-utrecht")throw 0}catch(e){modal('<h3>Link werkt niet</h3><p>Deze deellink is beschadigd of onvolledig. Vraag de afzender om hem opnieuw te sturen.</p><div class="row"><button class="btn primary" onclick="this.closest(\'.modal\').remove()">Oké</button></div>');return}
+  const rated=Object.keys(p.rate||{}).filter(id=>Object.values(p.rate[id]||{}).some(v=>v)).length;
+  const own=p.from&&st.me&&p.from===st.me;
+  const m=modal('<h3>Lijst van '+esc(p.from||"je partner")+'</h3><p>'+(p.short||[]).length+' scholen op de shortlist, '+rated+' beoordeeld.</p><p><b>Samenvoegen</b> zet de scholen erbij op jouw shortlist en toont '+esc(p.from||"zijn of haar")+' scores en notities naast de jouwe. <b>Vervangen</b> gebruik je om je eigen lijst naar een ander apparaat over te zetten.</p><div class="row"><button class="btn primary" id="mMerge">Samenvoegen</button><button class="btn" id="mRepl">Vervangen</button><button class="btn" id="mNo">Annuleren</button></div>');
+  if(own){m.querySelector("#mRepl").classList.add("primary");m.querySelector("#mMerge").classList.remove("primary");}
+  m.querySelector("#mMerge").onclick=()=>{mergeIn(p);save();renderAll();m.remove();show("weigh")};
+  m.querySelector("#mRepl").onclick=()=>{if(!confirm("Je eigen shortlist, scores en notities in deze browser worden vervangen. Doorgaan?"))return;replaceWith(p);if(!st.me&&p.from)st.me=p.from;save();renderAll();m.remove();show("weigh")};
+  m.querySelector("#mNo").onclick=()=>m.remove();
+}
+
 function renderAll(){renderHome();renderExam();renderFilters();renderList();renderAgenda();renderCompare();renderWeigh();renderTray();}
 function show(view){
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.view===view));
@@ -615,6 +691,7 @@ function show(view){
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.view));
 document.getElementById("trayGo").onclick=()=>show("compare");
 document.getElementById("expBtn").onclick=exportData;
+document.getElementById("footShare").onclick=shareList;
 document.getElementById("impFile").onchange=e=>{if(e.target.files[0])importData(e.target.files[0]);e.target.value=""};
 document.getElementById("sort").onchange=e=>{f.sort=e.target.value;renderList()};
 document.getElementById("q").oninput=e=>{f.q=e.target.value;renderList()};
@@ -645,6 +722,8 @@ document.addEventListener("input",e=>{
   if(t.dataset.note){st.notes[t.dataset.note]=t.value;save();renderCompare();}
 });
 renderAll();
+checkIncoming();
+window.addEventListener("hashchange",checkIncoming);
 </script>
 </body>
 </html>
