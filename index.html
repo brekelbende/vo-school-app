@@ -70,6 +70,10 @@ section.view{padding:20px 0 120px}
 .toggles{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.92rem;color:var(--muted)}
 .toggles label{display:flex;gap:6px;align-items:center;cursor:pointer}
 .resultline{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:.92rem;margin-bottom:10px}
+.hits{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-size:.92rem;margin-top:-6px}
+.hits[hidden]{display:none}
+.school,#rCount{scroll-margin-top:80px}
+.school.flash{outline:3px solid var(--yellow);outline-offset:2px}
 .sel{border:1px solid var(--line);border-radius:0;padding:4px 6px;background:var(--card)}
 .dist{font-weight:700;color:var(--ink);font-size:.95rem;margin:0}
 .exam{background:var(--panel);border:1px solid var(--line);border-radius:0;padding:14px 16px;margin-bottom:16px;font-size:.93rem}
@@ -222,6 +226,7 @@ footer.wrap{max-width:none;padding:28px max(16px,calc((100% - 1080px)/2 + 16px))
   <section class="view" id="v-list">
     <div class="filters">
       <input class="search" id="q" type="search" placeholder="Zoek op naam, wijk of kenmerk" aria-label="Zoek scholen">
+      <div class="hits" id="qHits" aria-live="polite" hidden></div>
       <details class="fold" data-fold="filters" id="filtersFold"><summary>Filters <span class="tag" id="fCount" hidden></span></summary><div class="fold-body">
       <div class="frow" id="fLevel"><span class="flabel">Advies</span></div>
       <div class="frow" id="fDist"><span class="flabel">Fietstijd</span></div>
@@ -396,14 +401,14 @@ function chips(el,values,onClick,isOn){
   el.querySelectorAll(".chip").forEach(c=>c.remove());
   values.forEach(v=>{const b=document.createElement("button");b.className="chip";b.textContent=v.label;b.setAttribute("aria-pressed",isOn(v.key));b.onclick=()=>{onClick(v.key);renderAll()};el.appendChild(b)});
 }
-function visible(){
+function visible(allTypes){
   const q=f.q.trim().toLowerCase();
   return S.filter(s=>{
     if(f.showHidden){if(!st.hidden.includes(s.id))return false;}
     else if(st.hidden.includes(s.id))return false;
-    if(s.type==="part"&&!f.part)return false;
-    if(s.type==="int"&&!f.int)return false;
-    if(s.type==="vso"&&!f.vso)return false;
+    if(!allTypes&&s.type==="part"&&!f.part)return false;
+    if(!allTypes&&s.type==="int"&&!f.int)return false;
+    if(!allTypes&&s.type==="vso"&&!f.vso)return false;
     if(f.level.size&&![...f.level].every(k=>s.lv.includes(k)))return false;
     if(f.richting.size&&!f.richting.has(s.r))return false;
     if(f.aanpak.size&&!f.aanpak.has(s.a))return false;
@@ -428,7 +433,7 @@ function renderFilters(){
 }
 function card(s){
   const inC=st.compare.includes(s.id), inS=st.short.includes(s.id);
-  return '<article class="school'+(inC?' picked':'')+'">'+
+  return '<article class="school'+(inC?' picked':'')+'" data-id="'+s.id+'">'+
     '<h3>'+esc(s.n)+'</h3>'+ladder(s,f.level)+
     '<p class="dist">'+distTxt(s)+'</p>'+examLine(s)+nextLine(s)+'<p class="meta">'+esc(s.r)+', '+esc(s.a.toLowerCase())+(s.addr?'<br>'+esc(s.addr):'')+'</p>'+
     '<div class="tags">'+(s.type?'<span class="tag warn">'+typeLabel(s.type)+'</span>':'')+s.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join("")+'</div>'+
@@ -448,6 +453,15 @@ function renderList(){
   if(f.showHidden)rc.textContent=nh+(nh===1?" weggefilterde school":" weggefilterde scholen");
   else{rc.innerHTML=v.length+" van "+S.length+" scholen"+(nh?", "+nh+" weggefilterd":"")+(off?' &nbsp; <button class="linkbtn" id="showAllTypes">Toon ook de '+off+' particuliere, internationale en speciale scholen</button>':"");
     const sa=document.getElementById("showAllTypes");if(sa)sa.onclick=()=>{f.part=f.int=f.vso=true;["tPart","tInt","tVso"].forEach(id=>document.getElementById(id).checked=true);renderAll()};}
+  const qh=document.getElementById("qHits"),qt=f.q.trim();
+  qh.hidden=!qt||f.showHidden;
+  if(!qh.hidden){
+    const fAct=f.level.size||f.maxMin||f.richting.size||f.aanpak.size;
+    qh.innerHTML=(v.length?'<strong>'+v.length+(v.length===1?' school':' scholen')+' gevonden</strong>'+v.slice(0,6).map(s=>'<button class="linkbtn" data-goto="'+s.id+'">'+esc(s.n)+'</button>').join("")+(v.length>6?'<span>en '+(v.length-6)+' meer</span>':'')+'<button class="linkbtn" data-goto="">Naar de resultaten</button>'
+      :'<strong>Geen school gevonden voor \u2018'+esc(qt)+'\u2019'+(fAct?' met deze filters':'')+'</strong>');
+    const nx=visible(true).length-v.length;
+    if(nx>0)qh.insertAdjacentHTML("beforeend",'<button class="linkbtn" data-alltypes="1">Ook '+nx+(nx===1?' particuliere, internationale of speciale school':' particuliere, internationale of speciale scholen')+'</button>');
+  }
   document.getElementById("list").innerHTML=v.length?v.map(card).join(""):(f.showHidden?'<div class="empty"><strong>Je hebt nog geen scholen weggefilterd</strong>Gebruik de knop Wegfilteren op een schoolkaart.</div>':'<div class="empty"><strong>Geen school past bij deze filters</strong>Haal een filter weg of zet een extra schoolsoort aan.</div>');
 }
 function toggleCompare(id){
@@ -773,6 +787,8 @@ document.getElementById("reset").onclick=()=>{f.showHidden=false;f.q="";f.maxMin
 document.addEventListener("click",e=>{
   const b=e.target.closest("button"); if(!b)return;
   if(b.dataset.ag){const k=b.dataset.ag;if(k==="scope")ag.scope=b.dataset.agv;else ag[k]=!ag[k];renderAgenda();return;}
+  if(b.dataset.goto!==undefined){const el=b.dataset.goto?document.querySelector('#list [data-id="'+b.dataset.goto+'"]'):document.getElementById("rCount");if(el){el.scrollIntoView({behavior:"smooth",block:"start"});if(b.dataset.goto){el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1500);}}return;}
+  if(b.dataset.alltypes){f.part=f.int=f.vso=true;["tPart","tInt","tVso"].forEach(id=>document.getElementById(id).checked=true);renderAll();return;}
   if(b.dataset.cmp){toggleCompare(b.dataset.cmp);return;}
   if(b.dataset.short){toggleShort(b.dataset.short);return;}
   if(b.dataset.hide){const id=b.dataset.hide;if(!st.hidden.includes(id))st.hidden.push(id);st.compare=st.compare.filter(x=>x!==id);save();renderAll();return;}
