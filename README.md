@@ -16,7 +16,7 @@ Werkt de app niet goed (bijvoorbeeld door oude opgeslagen gegevens)? Met "Alles 
 - Schoollijst: Scholen op de kaart en De VO Gids
 - Websites van de scholen: eigen opzoekwerk (november 2026)
 - Adressen scholen: Google Maps; eigen adres: PDOK Locatieserver
-- Open dagen: link naar de Open Dagen Planner van De VO Gids
+- Open dagen: websites van de scholen, aangevuld met de Open Dagen Planner van De VO Gids (november 2026)
 
 Niveaus en kenmerken zijn een startpunt, geen officiële registratie.
 
