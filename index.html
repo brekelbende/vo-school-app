@@ -463,7 +463,7 @@ function renderList(){
   const off=S.filter(s=>(s.type==="part"&&!f.part)||(s.type==="int"&&!f.int)||(s.type==="vso"&&!f.vso)).length;
   const rc=document.getElementById("rCount");
   if(f.showHidden)rc.textContent=nh+(nh===1?" weggefilterde school":" weggefilterde scholen");
-  else{rc.innerHTML=v.length+" van "+S.length+" scholen"+(nh?", "+nh+" weggefilterd":"")+(off?' &nbsp; <button class="linkbtn" id="showAllTypes">Toon ook de '+off+' particuliere, internationale en speciale scholen</button>':"");
+  else{const tot=S.length-off;rc.innerHTML=(v.length===tot?tot:v.length+" van "+tot)+" scholen"+(nh?", "+nh+" weggefilterd":"")+(off?' &nbsp; <button class="linkbtn" id="showAllTypes">Toon ook de '+off+' particuliere, internationale en speciale scholen</button>':"");
     const sa=document.getElementById("showAllTypes");if(sa)sa.onclick=()=>{f.part=f.int=f.vso=true;["tPart","tInt","tVso"].forEach(id=>document.getElementById(id).checked=true);renderAll()};}
   const qh=document.getElementById("qHits"),qt=f.q.trim();
   qh.hidden=!qt||f.showHidden;
