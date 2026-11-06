@@ -7,13 +7,14 @@
 <meta name="description" content="Vergelijk alle middelbare scholen in Utrecht op niveau, richting, onderwijsaanpak, fietstijd en examenresultaten. Je keuzes blijven in je eigen browser.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Familjen+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#F6F7F5; --card:#FFFFFF; --ink:#18201E; --muted:#5B6663; --line:#D9DEDB;
-  --red:#C4161C; --red-soft:#FBE7E7; --canal:#1F5C57; --canal-soft:#DCEBE8; --empty:#E7EBE9;
-  --display:"Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --body:"Atkinson Hyperlegible", "Segoe UI", Roboto, Arial, sans-serif;
+  --paper:#FFFFFF; --card:#FFFFFF; --panel:#F2F2F2; --ink:#1A1A1A; --muted:#595959; --line:#CCCCCC;
+  --red:#BB271A; --red-soft:#FBEAE8; --on-red:#FFFFFF; --canal:#24578F; --canal-soft:#E8EEF6; --empty:#E6E6E6;
+  --bar:#262626; --bar-line:#666666; --yellow:#F7CE46; --focus:#24578F;
+  --display:"Noto Sans", Arial, Helvetica, sans-serif;
+  --body:"Noto Sans", Arial, Helvetica, sans-serif;
   color-scheme: light;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
@@ -21,64 +22,70 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#121816; --card:#19211F; --ink:#E9EEEC; --muted:#9AA6A2; --line:#2C3633;
-    --red:#FF6B6F; --red-soft:#3A1E20; --canal:#73C5BA; --canal-soft:#1D2F2C; --empty:#26302D;
+    --paper:#121212; --card:#1C1C1C; --panel:#1C1C1C; --ink:#F2F2F2; --muted:#B3B3B3; --line:#3D3D3D;
+    --red:#FF6B5E; --red-soft:#3A1D1A; --on-red:#1A1A1A; --canal:#8FB3E0; --canal-soft:#1B2838; --empty:#2E2E2E;
+    --bar:#262626; --bar-line:#666666; --focus:#8FB3E0;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
-  --paper:#121816; --card:#19211F; --ink:#E9EEEC; --muted:#9AA6A2; --line:#2C3633;
-  --red:#FF6B6F; --red-soft:#3A1E20; --canal:#73C5BA; --canal-soft:#1D2F2C; --empty:#26302D;
+  --paper:#121212; --card:#1C1C1C; --panel:#1C1C1C; --ink:#F2F2F2; --muted:#B3B3B3; --line:#3D3D3D;
+  --red:#FF6B5E; --red-soft:#3A1D1A; --on-red:#1A1A1A; --canal:#8FB3E0; --canal-soft:#1B2838; --empty:#2E2E2E;
+  --bar:#262626; --bar-line:#666666; --focus:#8FB3E0;
   color-scheme: dark;
 }
 *,*::before,*::after{box-sizing:inherit}
 html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-text-size-adjust:100%}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
 button,input,textarea,select{font:inherit;color:inherit}
-:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
 
 header{padding:28px 0 8px}
-.brand{display:flex;gap:14px;align-items:flex-start}
-.flag{flex:0 0 auto;width:44px;height:44px;border-radius:6px;background:linear-gradient(135deg,#fff 0 50%,#C4161C 50% 100%);box-shadow:inset 0 0 0 1px var(--line);margin-top:4px}
-h1{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.05;letter-spacing:-.02em;margin:0}
+.brand{display:flex;gap:16px;align-items:stretch}
+.brand::before{content:"";flex:0 0 auto;width:8px;background:var(--yellow)}
+.flag{flex:0 0 auto;align-self:flex-start;width:44px;height:44px;margin-top:4px;background:linear-gradient(135deg,#fff 0 50%,#C4161C 50% 100%);box-shadow:inset 0 0 0 1px var(--line)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.15;margin:0}
 .lead{color:var(--muted);margin:8px 0 0;max-width:62ch}
 
-nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line);margin-top:16px}
-nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
-.tab{background:none;border:0;padding:14px 12px 12px;font-family:var(--display);font-weight:600;font-size:1rem;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
-.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--red)}
-.count{display:inline-block;min-width:1.4em;padding:0 .4em;margin-left:4px;border-radius:99px;background:var(--canal-soft);color:var(--canal);font-size:.85rem;text-align:center}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bar);margin-top:20px;--focus:var(--yellow)}
+nav.tabs .wrap{display:flex;gap:0;overflow-x:auto}
+.tab{background:none;border:0;border-left:1px solid var(--bar-line);padding:14px 18px 10px;font-family:var(--display);font-weight:700;font-size:1.1rem;color:#fff;border-bottom:4px solid transparent;cursor:pointer;white-space:nowrap}
+.tab:first-child{border-left:0}
+.tab:hover{text-decoration:underline}
+.tab:focus-visible{outline-offset:-3px}
+.tab[aria-selected="true"]{background:#000;border-bottom-color:var(--yellow)}
+.count{display:inline-block;min-width:1.4em;padding:0 .4em;margin-left:4px;border-radius:0;background:var(--canal-soft);color:var(--canal);font-size:.85rem;text-align:center}
 
 section.view{padding:20px 0 120px}
 .hidden{display:none!important}
 
 .filters{display:grid;gap:14px;margin-bottom:18px}
-.search{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.search{width:100%;padding:14px 16px;border:2px solid var(--red);border-radius:0;background:var(--card);font-size:1.05rem}
 .frow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .flabel{font-weight:700;font-size:.9rem;margin-right:4px;min-width:72px}
-.chip{border:1px solid var(--line);background:var(--card);padding:6px 12px;border-radius:99px;cursor:pointer;font-size:.92rem}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip{border:1px solid var(--line);background:var(--card);padding:6px 12px;border-radius:0;cursor:pointer;font-size:.92rem}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink);font-weight:700}
 .toggles{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.92rem;color:var(--muted)}
 .toggles label{display:flex;gap:6px;align-items:center;cursor:pointer}
 .resultline{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:.92rem;margin-bottom:10px}
-.sel{border:1px solid var(--line);border-radius:8px;padding:4px 6px;background:var(--card)}
+.sel{border:1px solid var(--line);border-radius:0;padding:4px 6px;background:var(--card)}
 .dist{font-weight:700;color:var(--ink);font-size:.95rem;margin:0}
-.exam{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:.93rem}
+.exam{background:var(--panel);border:1px solid var(--line);border-radius:0;padding:14px 16px;margin-bottom:16px;font-size:.93rem}
 .exam h3{font-family:var(--display);font-size:1.05rem;margin:0 0 4px}
 .exam p{margin:0 0 8px;color:var(--muted);max-width:70ch}
 .exam .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.filebtn{display:inline-block;background:var(--red);color:#fff;border-radius:8px;padding:7px 12px;cursor:pointer}
+.filebtn{display:inline-block;background:var(--red);color:var(--on-red);font-weight:700;border-radius:0;padding:7px 12px;cursor:pointer}
 .filebtn input{display:none}
 .maptbl{margin-top:12px;display:grid;gap:6px}
 .maptbl label{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:8px;align-items:center}
-.maptbl select{width:100%;border:1px solid var(--line);border-radius:8px;padding:5px;background:var(--paper)}
+.maptbl select{width:100%;border:1px solid var(--line);border-radius:0;padding:5px;background:var(--paper)}
 .score-line{margin:0;font-size:.92rem}
 .score-line b{font-weight:700}
 .pct-low{color:var(--red)}
 .ag-month{font-family:var(--display);font-size:1.1rem;margin:22px 0 8px;text-transform:capitalize}
-.ev{display:grid;grid-template-columns:64px 1fr;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px}
+.ev{display:grid;grid-template-columns:64px 1fr;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:0;padding:12px;margin-bottom:8px}
 .ev.big{border-left:4px solid var(--red)}
 .ev.today{box-shadow:0 0 0 2px var(--red)}
 .evd{text-align:center;line-height:1.1}
@@ -89,14 +96,14 @@ section.view{padding:20px 0 120px}
 .ev .ext{margin-top:6px}
 .next-line{margin:0;font-size:.92rem}
 .modal{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
-.modal>div{background:var(--card);color:var(--ink);border-radius:14px;max-width:460px;width:100%;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.modal>div{background:var(--card);color:var(--ink);border-radius:0;max-width:460px;width:100%;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
 .modal h3{font-family:var(--display);margin:0 0 8px;font-size:1.2rem}
 .modal p{margin:0 0 12px;color:var(--muted)}
 .modal .row{display:flex;gap:8px;flex-wrap:wrap}
-.modal input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);margin-bottom:12px}
+.modal input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:0;background:var(--paper);margin-bottom:12px}
 .pscores{display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem;color:var(--muted);margin-top:-4px}
 .pscores b{color:var(--ink)}
-.pnote{margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--canal-soft);font-size:.9rem}
+.pnote{margin-top:8px;padding:8px 10px;border-radius:0;background:var(--canal-soft);font-size:.9rem}
 .pnote b{color:var(--canal)}
 .sharebar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
 .fold>summary{cursor:pointer;list-style:none;font-family:var(--display);font-weight:600;font-size:1.05rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -110,78 +117,85 @@ section.view{padding:20px 0 120px}
 .tab .ts{display:none}
 @media (max-width:600px){
   nav.tabs .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:0;overflow:visible}
-  .tab{padding:12px 2px 10px;font-size:.88rem;text-align:center;white-space:normal;line-height:1.15;border-bottom-width:3px}
+  .tab{padding:12px 2px 8px;font-size:.88rem;text-align:center;white-space:normal;line-height:1.15;border-bottom-width:4px}
   .tab .tl{display:none}
   .tab .ts{display:inline}
   .tab .count{display:block;width:max-content;margin:4px auto 0;font-size:.75rem}
 }
 .linkbtn{background:none;border:0;color:var(--canal);text-decoration:underline;cursor:pointer;padding:0}
+.linkbtn:hover,.ext a:hover{text-decoration-thickness:2px}
 
 .list{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
-.school{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.school{background:var(--card);border:1px solid var(--line);border-radius:0;padding:16px;display:flex;flex-direction:column;gap:10px}
 .school.picked{border-color:var(--canal);box-shadow:0 0 0 1px var(--canal)}
 .school h3{font-family:var(--display);font-size:1.15rem;line-height:1.2;margin:0}
 .meta{color:var(--muted);font-size:.92rem;margin:0}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font-size:.8rem;padding:2px 8px;border-radius:6px;background:var(--canal-soft);color:var(--canal)}
+.tag{font-size:.8rem;padding:2px 8px;border-radius:0;background:var(--canal-soft);color:var(--canal)}
 .tag.warn{background:var(--red-soft);color:var(--red)}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
-.btn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:.92rem}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:0;padding:7px 12px;cursor:pointer;font-size:.92rem}
 .btn.on{background:var(--canal);border-color:var(--canal);color:var(--paper)}
-.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.primary{background:var(--red);border-color:var(--red);color:var(--on-red);font-weight:700}
 .ext{font-size:.88rem;color:var(--canal)}
 .ext a{color:inherit}
 
 /* The level ladder: the one visual signature */
 .ladder{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .rung{display:flex;flex-direction:column;gap:3px;align-items:stretch}
-.rung i{display:block;height:10px;border-radius:2px;background:var(--empty)}
+.rung i{display:block;height:10px;border-radius:0;background:var(--empty)}
 .rung.has i{background:var(--canal)}
 .rung.has.match i{background:var(--red)}
 .rung span{font-size:.7rem;color:var(--muted);text-align:center;line-height:1}
 .rung.has span{color:var(--ink);font-weight:700}
 
-.tray{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--ink);color:var(--paper);padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px))}
+.tray{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--bar);color:#fff;--focus:var(--yellow);border-top:4px solid var(--yellow);padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px))}
 .tray .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.tray .btn{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.tray .btn{background:#fff;color:#1A1A1A;border-color:#fff;font-weight:700}
+.tray .btn:disabled{opacity:.6;cursor:not-allowed}
 
-.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:0;background:var(--card)}
 table{border-collapse:collapse;width:100%;min-width:560px}
 th,td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid var(--line);font-size:.93rem}
 thead th{font-family:var(--display);font-size:1rem;position:sticky;top:0;background:var(--card)}
 tbody th{color:var(--muted);font-weight:700;width:120px;position:sticky;left:0;background:var(--card)}
 tr:last-child td,tr:last-child th{border-bottom:0}
 .x{background:none;border:0;color:var(--muted);cursor:pointer;font-size:.85rem;text-decoration:underline;padding:0;margin-top:4px;display:block}
-.empty{padding:32px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+.empty{padding:32px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:0}
 .empty strong{display:block;color:var(--ink);font-family:var(--display);font-size:1.1rem;margin-bottom:4px}
 
 h2{font-family:var(--display);font-size:1.35rem;margin:0 0 6px}
 .sub{color:var(--muted);margin:0 0 16px;max-width:65ch}
 .criteria{display:grid;gap:10px;margin-bottom:28px}
-.crit{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.crit{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:0;padding:10px 12px}
 .crit input[type=text]{border:0;background:transparent;font-weight:700;min-width:0;padding:4px 0}
 .weight{display:flex;gap:4px}
-.weight button,.rate button{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:.9rem}
+.weight button,.rate button{width:34px;height:34px;border-radius:0;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:.9rem}
 .weight button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .rate button[aria-pressed="true"]{background:var(--canal);color:var(--paper);border-color:var(--canal)}
 .wl{font-size:.75rem;color:var(--muted);text-align:center;grid-column:2}
 .rank{display:grid;gap:12px}
-.rcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.rcard{background:var(--card);border:1px solid var(--line);border-radius:0;padding:16px}
 .rhead{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
 .rhead h3{font-family:var(--display);margin:0;font-size:1.1rem}
 .score{font-family:var(--display);font-weight:700;font-size:1.6rem;color:var(--red);white-space:nowrap}
 .score small{font-size:.85rem;color:var(--muted);font-weight:500}
-.bar{height:6px;border-radius:3px;background:var(--empty);margin:8px 0 12px;overflow:hidden}
+.bar{height:6px;border-radius:0;background:var(--empty);margin:8px 0 12px;overflow:hidden}
 .bar b{display:block;height:100%;background:var(--red);transition:width .3s}
 .rrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--line);flex-wrap:wrap}
 .rrow span{font-size:.93rem}
 .rate{display:flex;gap:4px}
-textarea{width:100%;min-height:64px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--paper);margin-top:8px;resize:vertical}
+textarea{width:100%;min-height:64px;border:1px solid var(--line);border-radius:0;padding:8px 10px;background:var(--paper);margin-top:8px;resize:vertical}
 .small{font-size:.88rem;color:var(--muted)}
-.note{margin-top:28px;padding:14px 16px;border-left:3px solid var(--canal);background:var(--canal-soft);border-radius:0 8px 8px 0;font-size:.92rem;max-width:72ch}
-footer{color:var(--muted);font-size:.85rem;padding:0 0 40px}
+.note{margin-top:28px;padding:14px 16px;border-left:4px solid var(--canal);background:var(--canal-soft);border-radius:0;font-size:.92rem;max-width:72ch}
+footer{--ink:#FFFFFF;--muted:#E6E6E6;--canal:#FFFFFF;--focus:var(--yellow);background:var(--bar);color:var(--muted);font-size:.88rem;border-top:4px solid var(--yellow)}
+footer.wrap{max-width:none;padding:28px max(16px,calc((100% - 1080px)/2 + 16px)) 48px}
 @media (max-width:560px){.flabel{width:100%}.crit{grid-template-columns:1fr auto}.crit .weight{grid-column:1/-1}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.errbar{position:fixed;left:0;right:0;top:0;z-index:30;background:var(--red);color:var(--on-red);padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;font-weight:700}
+.errbar button{border-radius:0;cursor:pointer;font:inherit;padding:6px 10px}
+.errbar .go{background:var(--card);color:var(--ink);border:0}
+.errbar .x{background:none;border:0;color:var(--on-red);margin-left:auto;font-size:1.3rem;line-height:1;text-decoration:none}
 </style>
 </head>
 <body>
@@ -237,10 +251,33 @@ footer{color:var(--muted);font-size:.85rem;padding:0 0 40px}
 </div>
 
 <footer class="wrap">
-  <p style="margin:0 0 12px"><b style="color:var(--ink)">Mijn keuzes</b> (shortlist, scores, notities, adres) staan alleen in deze browser. <button class="linkbtn" id="footShare">Deel met partner</button> &nbsp; <button class="linkbtn" id="expBtn">Opslaan als bestand</button> &nbsp; <label class="linkbtn" style="cursor:pointer">Bestand laden<input type="file" accept=".json,application/json" id="impFile" style="display:none"></label><br><span>Met Deel met partner stuur je je lijst als link via WhatsApp; de gegevens zitten in de link zelf en gaan niet via een server. Het bestand is handig als back-up.</span></p>
-  Deze app is een hulpmiddel van een ouder voor ouders, geen officiële bron. Examencijfers: DUO Open Onderwijsdata, examenjaar 2024-2025 (CC-BY 4.0). Adressen opgezocht via Google Maps, je eigen adres via PDOK Locatieserver. Bron schoollijst: Scholen op de kaart en De VO Gids (oktober 2026). Niveaus en kenmerken zijn een startpunt, geen officiële registratie. Slagingspercentages, inspectieoordeel en leerlingaantallen vind je per school via de link Scholen op de kaart. Fietsafstand is een schatting: hemelsbrede afstand maal 1,3 voor omrijden, bij 15 km/u. De link Fietsroute geeft de exacte route.
+  <p style="margin:0 0 12px"><b style="color:var(--ink)">Mijn keuzes</b> (shortlist, scores, notities, adres) staan alleen in deze browser. <button class="linkbtn" id="footShare">Deel met partner</button> &nbsp; <button class="linkbtn" id="expBtn">Opslaan als bestand</button> &nbsp; <label class="linkbtn" style="cursor:pointer">Bestand laden<input type="file" accept=".json,application/json" id="impFile" style="display:none"></label> &nbsp; <button class="linkbtn" id="wipeBtn">Alles wissen</button><br><span>Met Deel met partner stuur je je lijst als link via WhatsApp; de gegevens zitten in de link zelf en gaan niet via een server. Het bestand is handig als back-up. Werkt de app niet goed? Met Alles wissen (of door ?reset achter het adres te zetten) begin je opnieuw.</span></p>
+  Deze app is een hulpmiddel van een ouder voor ouders, geen officiële bron. Examencijfers: DUO Open Onderwijsdata, examenjaar 2024-2025 (CC-BY 4.0). Adressen opgezocht via Google Maps, je eigen adres via PDOK Locatieserver. Bron schoollijst: Scholen op de kaart en De VO Gids (oktober 2026). Websites van de scholen: eigen opzoekwerk (november 2026). Niveaus en kenmerken zijn een startpunt, geen officiële registratie. Slagingspercentages, inspectieoordeel en leerlingaantallen vind je per school via de link Scholen op de kaart. Fietsafstand is een schatting: hemelsbrede afstand maal 1,3 voor omrijden, bij 15 km/u. De link Fietsroute geeft de exacte route. Broncode en fouten melden: <a class="ext" href="https://github.com/brekelbende/vo-school-app" target="_blank" rel="noopener">GitHub</a>.
 </footer>
 
+<script>
+/* Noodrem: werkt ook als het hoofdscript faalt. */
+(function(){
+  function clearKeys(){try{for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i);if(k&&k.indexOf("vo-utrecht")===0)localStorage.removeItem(k);}}catch(e){}}
+  if(/[?&]reset(=|&|$)/.test(location.search)){clearKeys();location.replace(location.pathname);return;}
+  window.wipeLocal=function(){
+    if(!confirm("Alle keuzes in deze browser wissen (shortlist, scores, notities, adres)? Dit kan niet ongedaan worden. Tip: sla eerst op als bestand."))return;
+    clearKeys();location.replace(location.pathname);
+  };
+  var shown=false;
+  function bar(){
+    if(shown||!document.body)return;shown=true;
+    var d=document.createElement("div");d.className="errbar";d.setAttribute("role","alert");
+    var t=document.createElement("span");t.textContent="Er ging iets mis, mogelijk door opgeslagen gegevens van een oudere versie.";
+    var b=document.createElement("button");b.className="go";b.textContent="Gegevens wissen en herladen";b.onclick=function(){window.wipeLocal()};
+    var x=document.createElement("button");x.className="x";x.textContent="×";x.setAttribute("aria-label","Sluiten");x.onclick=function(){d.remove()};
+    d.appendChild(t);d.appendChild(b);d.appendChild(x);document.body.appendChild(d);
+  }
+  window.addEventListener("error",bar);
+  window.addEventListener("unhandledrejection",bar);
+  document.addEventListener("DOMContentLoaded",function(){var w=document.getElementById("wipeBtn");if(w)w.onclick=function(){window.wipeLocal()};});
+})();
+</script>
 <script>
 const LV = [
   {k:"pro",l:"pro",full:"Praktijkonderwijs"},
@@ -255,38 +292,38 @@ const SOK = "https://scholenopdekaart.nl/middelbare-scholen/utrecht/";
 const SOKQ = n => "https://scholenopdekaart.nl/zoeken/middelbare-scholen?zoektermen=" + encodeURIComponent(n) + "&weergave=Lijst";
 
 const S = [
- {id:"cgu",n:"Christelijk Gymnasium Utrecht",lv:["g"],r:"Protestants-christelijk",a:"Regulier",tags:["Categoraal gymnasium","Klassieke talen"],u:SOK+"1026/christelijk-gymnasium-utrecht"},
- {id:"usg",n:"Utrechts Stedelijk Gymnasium",lv:["g"],r:"Openbaar",a:"Regulier",tags:["Categoraal gymnasium","Klassieke talen","NUOVO"],u:SOK+"2311/utrechts-stedelijk-gymnasium"},
- {id:"boni",n:"St. Bonifatiuscollege",lv:["h","v","g"],r:"Rooms-katholiek",a:"Regulier",tags:["Havo/vwo-school"],u:SOK+"1020/st-bonifatiuscollege"},
+ {id:"cgu",n:"Christelijk Gymnasium Utrecht",lv:["g"],r:"Protestants-christelijk",a:"Regulier",tags:["Categoraal gymnasium","Klassieke talen"],w:"https://www.cgu.nl/",u:SOK+"1026/christelijk-gymnasium-utrecht"},
+ {id:"usg",n:"Utrechts Stedelijk Gymnasium",lv:["g"],r:"Openbaar",a:"Regulier",tags:["Categoraal gymnasium","Klassieke talen","NUOVO"],w:"https://www.usgym.nl/",u:SOK+"2311/utrechts-stedelijk-gymnasium"},
+ {id:"boni",n:"St. Bonifatiuscollege",lv:["h","v","g"],r:"Rooms-katholiek",a:"Regulier",tags:["Havo/vwo-school"],w:"https://boni.nl/",u:SOK+"1020/st-bonifatiuscollege"},
  {id:"greg",n:"Sint Gregorius College",lv:["t","h","v","g"],r:"Rooms-katholiek",a:"Regulier",tags:["Havo/vwo-school"],u:SOKQ("Sint Gregorius College")},
- {id:"tophavo",n:"Globe TopHavo",lv:["h"],r:"Rooms-katholiek",a:"Regulier",tags:["Alleen havo","Locatie van Sint Gregorius"],u:SOK+"26911/sint-gregorius-college-locatie-globe-tophavo"},
- {id:"descart",n:"Descart",lv:["h","v"],r:"Rooms-katholiek",a:"Thematisch",tags:["Design, science & art","Muziek, dans, toneel","Laptop + boeken","Onderdeel van Gregorius"],u:SOK+"26558/descart"},
- {id:"globe",n:"Globe College vmbo",lv:["b","k","t"],r:"Rooms-katholiek",a:"Regulier",tags:["Breed vmbo"],u:SOK+"1033/globe-college-utrecht-vmbo"},
- {id:"rietveld",n:"Gerrit Rietveld College",lv:["t","h","v"],r:"Openbaar",a:"Regulier",tags:["Brede scholengemeenschap","NUOVO","Vaak loting"],u:SOK+"1024/gerrit-rietveld-college"},
- {id:"lrc",n:"Leidsche Rijn College",lv:["h","v"],r:"Openbaar",a:"Regulier",tags:["Havo/vwo-school","Vmbo zit bij VOLT!","NUOVO"],u:SOK+"2319/leidsche-rijn-college"},
- {id:"amadeus",n:"Amadeus Lyceum",lv:["t","h","v"],r:"Openbaar",a:"Thematisch",tags:["Kunst en cultuur","Eigentijds leren","NUOVO","Vaak loting"],u:SOKQ("Amadeus Lyceum")},
- {id:"limus",n:"Limus College",lv:["t","h","v"],r:"Openbaar",a:"Regulier",tags:["Nieuwe school","Plek voor 1.000 leerlingen"],u:SOKQ("Limus College")},
- {id:"tien",n:"Academie Tien",lv:["t","h","v"],r:"Openbaar",a:"10-14 onderwijs",tags:["Start al vanaf 10 jaar","Kleinschalige start (sinds 2015)","NUOVO"],u:SOK+"23733/academie-tien"},
- {id:"unic",n:"UniC",lv:["h","v"],r:"Openbaar",a:"Gepersonaliseerd leren",tags:["Eigen leerroute en tempo","Coaching","NUOVO"],u:SOK+"22452/unic"},
- {id:"x11",n:"X11 media en vormgeving",lv:["b","k","t","h"],r:"Openbaar",a:"Thematisch",tags:["Media en vormgeving","Creatief vmbo","NUOVO"],u:SOK+"2322/x11"},
- {id:"volt",n:"VOLT! Toekomstmakers",lv:["b","k","t"],r:"Openbaar",a:"Thematisch",tags:["Vmbo in Leidsche Rijn","Sportklas","Zelfde gebouw als Limus","NUOVO"],u:SOKQ("VOLT! Toekomstmakers")},
- {id:"mpower",n:"MPower",lv:["pro","b","k","t"],r:"Openbaar",a:"Praktijkgericht",tags:["Nieuwe school","Leren door doen","Praktijk + vmbo + mbo","NUOVO"],u:SOK+"2315/mpower"},
- {id:"kranenburg",n:"Kranenburg Praktijkonderwijs",lv:["pro"],r:"Onbekend",a:"Praktijkgericht",tags:["Categoraal praktijkonderwijs"],u:SOK+"1016/kranenburg-praktijkonderwijs"},
- {id:"yuverta",n:"Yuverta vmbo Utrecht",lv:["b","k","t"],r:"Algemeen bijzonder",a:"Thematisch",tags:["Groen vmbo","Natuur, dieren, voeding"],u:SOK+"1711/yuverta-vmbo-utrecht"},
- {id:"passie",n:"De Passie Utrecht",lv:["t","h","v"],r:"Christelijk (evangelisch)",a:"Regulier",tags:["Kleinschalig","Christelijke identiteit"],u:SOK+"1735/de-passie-utrecht"},
- {id:"alamana",n:"Al Amana College",lv:["t","h","v"],r:"Islamitisch",a:"Regulier",tags:["Jonge school","Islamitische identiteit"],u:SOK+"39655/al-amana-college-utrecht"},
- {id:"waldorf",n:"Waldorf Utrecht",lv:["t","h","v"],r:"Algemeen bijzonder",a:"Vrijeschool",tags:["Vrijeschoolpedagogiek","Kunstzinnig, periodeonderwijs"],u:SOK+"1018/waldorf-utrecht"},
- {id:"singel-hv",n:"School aan de Singel Montessori (havo/vwo)",lv:["h","v"],r:"Onbekend",a:"Montessori",tags:["Montessori","Voorheen Jordan-Montessori Lyceum"],u:SOK+"2171/school-aan-de-singel-montessori-havo-vwo"},
- {id:"singel-mh",n:"School aan de Singel Montessori (mavo/havo)",lv:["t","h"],r:"Onbekend",a:"Montessori",tags:["Montessori","Mavo/havo-stroom"],u:SOK+"89503/school-aan-de-singel-montessori-mavo-havo"},
- {id:"isu",n:"International School Utrecht",lv:["h","v"],r:"Openbaar",a:"International Baccalaureate",type:"int",tags:["Engelstalig","IB (MYP en DP)","Voor internationale gezinnen"],u:SOK+"23166/international-school-utrecht"},
- {id:"ithaka",n:"Ithaka internationale schakelklassen",lv:[],r:"Openbaar",a:"Schakelklas (ISK)",type:"int",tags:["Voor nieuwkomers","Eerst Nederlands leren"],u:SOK+"2321/ithaka-internationale-schakelklassen"},
- {id:"luzac",n:"Luzac Utrecht",lv:["t","h","v"],r:"Particulier",a:"Kleine klassen",type:"part",tags:["Lesgeld","Intensieve begeleiding"],u:"https://www.devogids.nl/27192/luzac-utrecht/"},
- {id:"winford",n:"Winford Utrecht",lv:["h","v"],r:"Particulier",a:"Kleine klassen",type:"part",tags:["Lesgeld","Kleine klassen"],u:"https://www.devogids.nl/27862/winford-utrecht/"},
- {id:"ranitz",n:"College Ariane de Ranitz",lv:["t","h","v"],r:"Onbekend",a:"Speciaal onderwijs",type:"vso",tags:["VSO","Toelaatbaarheidsverklaring nodig"],u:SOK+"33151/college-ariane-de-ranitz"},
- {id:"kromme",n:"Kromme Rijn College",lv:["pro","b","k","t","h","v"],r:"Openbaar",a:"Speciaal onderwijs",type:"vso",tags:["VSO cluster 4","Klein, ca. 100–120 leerlingen","Doel: terug naar regulier"],u:SOK+"23803/kromme-rijn-college"},
- {id:"stip",n:"STIP VSO Utrecht",lv:[],r:"Onbekend",a:"Speciaal onderwijs",type:"vso",tags:["VSO","Toelaatbaarheidsverklaring nodig"],u:SOK+"7991/stip-vso-utrecht"},
+ {id:"tophavo",n:"Globe TopHavo",lv:["h"],r:"Rooms-katholiek",a:"Regulier",tags:["Alleen havo","Locatie van Sint Gregorius"],w:"https://globecollege.nl/leerlingen/leerwegen/",u:SOK+"26911/sint-gregorius-college-locatie-globe-tophavo"},
+ {id:"descart",n:"Descart",lv:["h","v"],r:"Rooms-katholiek",a:"Thematisch",tags:["Design, science & art","Muziek, dans, toneel","Laptop + boeken","Onderdeel van Gregorius"],w:"https://descart.nl/",u:SOK+"26558/descart"},
+ {id:"globe",n:"Globe College vmbo",lv:["b","k","t"],r:"Rooms-katholiek",a:"Regulier",tags:["Breed vmbo"],w:"https://globecollege.nl/",u:SOK+"1033/globe-college-utrecht-vmbo"},
+ {id:"rietveld",n:"Gerrit Rietveld College",lv:["t","h","v"],r:"Openbaar",a:"Regulier",tags:["Brede scholengemeenschap","NUOVO","Vaak loting"],w:"https://www.gerritrietveldcollege.nl/",u:SOK+"1024/gerrit-rietveld-college"},
+ {id:"lrc",n:"Leidsche Rijn College",lv:["h","v"],r:"Openbaar",a:"Regulier",tags:["Havo/vwo-school","Vmbo zit bij VOLT!","NUOVO"],w:"https://www.lrc.nl/",u:SOK+"2319/leidsche-rijn-college"},
+ {id:"amadeus",n:"Amadeus Lyceum",lv:["t","h","v"],r:"Openbaar",a:"Thematisch",tags:["Kunst en cultuur","Eigentijds leren","NUOVO","Vaak loting"],w:"https://amadeuslyceum.nl/",u:SOKQ("Amadeus Lyceum")},
+ {id:"limus",n:"Limus College",lv:["t","h","v"],r:"Openbaar",a:"Regulier",tags:["Nieuwe school","Plek voor 1.000 leerlingen"],w:"https://limus.nl/",u:SOKQ("Limus College")},
+ {id:"tien",n:"Academie Tien",lv:["t","h","v"],r:"Openbaar",a:"10-14 onderwijs",tags:["Start al vanaf 10 jaar","Kleinschalige start (sinds 2015)","NUOVO"],w:"https://www.academie-tien.nl/",u:SOK+"23733/academie-tien"},
+ {id:"unic",n:"UniC",lv:["h","v"],r:"Openbaar",a:"Gepersonaliseerd leren",tags:["Eigen leerroute en tempo","Coaching","NUOVO"],w:"https://www.unic-utrecht.nl/",u:SOK+"22452/unic"},
+ {id:"x11",n:"X11 media en vormgeving",lv:["b","k","t","h"],r:"Openbaar",a:"Thematisch",tags:["Media en vormgeving","Creatief vmbo","NUOVO"],w:"https://www.x11.nu/",u:SOK+"2322/x11"},
+ {id:"volt",n:"VOLT! Toekomstmakers",lv:["b","k","t"],r:"Openbaar",a:"Thematisch",tags:["Vmbo in Leidsche Rijn","Sportklas","Zelfde gebouw als Limus","NUOVO"],w:"https://www.volt.eu/",u:SOKQ("VOLT! Toekomstmakers")},
+ {id:"mpower",n:"MPower",lv:["pro","b","k","t"],r:"Openbaar",a:"Praktijkgericht",tags:["Nieuwe school","Leren door doen","Praktijk + vmbo + mbo","NUOVO"],w:"https://www.mpower-utrecht.nl/",u:SOK+"2315/mpower"},
+ {id:"kranenburg",n:"Kranenburg Praktijkonderwijs",lv:["pro"],r:"Onbekend",a:"Praktijkgericht",tags:["Categoraal praktijkonderwijs"],w:"https://www.pro-kranenburg.nl/",u:SOK+"1016/kranenburg-praktijkonderwijs"},
+ {id:"yuverta",n:"Yuverta vmbo Utrecht",lv:["b","k","t"],r:"Algemeen bijzonder",a:"Thematisch",tags:["Groen vmbo","Natuur, dieren, voeding"],w:"https://www.yuverta.nl/vmbo/scholen/vmbo-utrecht/",u:SOK+"1711/yuverta-vmbo-utrecht"},
+ {id:"passie",n:"De Passie Utrecht",lv:["t","h","v"],r:"Christelijk (evangelisch)",a:"Regulier",tags:["Kleinschalig","Christelijke identiteit"],w:"https://www.depassiescholen.nl/utrecht/",u:SOK+"1735/de-passie-utrecht"},
+ {id:"alamana",n:"Al Amana College",lv:["t","h","v"],r:"Islamitisch",a:"Regulier",tags:["Jonge school","Islamitische identiteit"],w:"https://utrecht.alamanacollege.nl/",u:SOK+"39655/al-amana-college-utrecht"},
+ {id:"waldorf",n:"Waldorf Utrecht",lv:["t","h","v"],r:"Algemeen bijzonder",a:"Vrijeschool",tags:["Vrijeschoolpedagogiek","Kunstzinnig, periodeonderwijs"],w:"https://www.waldorfutrecht.nl/",u:SOK+"1018/waldorf-utrecht"},
+ {id:"singel-hv",n:"School aan de Singel Montessori (havo/vwo)",lv:["h","v"],r:"Onbekend",a:"Montessori",tags:["Montessori","Voorheen Jordan-Montessori Lyceum"],w:"https://www.schoolaandesingel.nl/",u:SOK+"2171/school-aan-de-singel-montessori-havo-vwo"},
+ {id:"singel-mh",n:"School aan de Singel Montessori (mavo/havo)",lv:["t","h"],r:"Onbekend",a:"Montessori",tags:["Montessori","Mavo/havo-stroom"],w:"https://www.schoolaandesingel.nl/",u:SOK+"89503/school-aan-de-singel-montessori-mavo-havo"},
+ {id:"isu",n:"International School Utrecht",lv:["h","v"],r:"Openbaar",a:"International Baccalaureate",type:"int",tags:["Engelstalig","IB (MYP en DP)","Voor internationale gezinnen"],w:"https://www.isutrecht.nl/",u:SOK+"23166/international-school-utrecht"},
+ {id:"ithaka",n:"Ithaka internationale schakelklassen",lv:[],r:"Openbaar",a:"Schakelklas (ISK)",type:"int",tags:["Voor nieuwkomers","Eerst Nederlands leren"],w:"https://www.ithaka-isk.nl/",u:SOK+"2321/ithaka-internationale-schakelklassen"},
+ {id:"luzac",n:"Luzac Utrecht",lv:["t","h","v"],r:"Particulier",a:"Kleine klassen",type:"part",tags:["Lesgeld","Intensieve begeleiding"],w:"https://www.luzac.nl/vestigingen/luzac-utrecht/",u:"https://www.devogids.nl/27192/luzac-utrecht/"},
+ {id:"winford",n:"Winford Utrecht",lv:["h","v"],r:"Particulier",a:"Kleine klassen",type:"part",tags:["Lesgeld","Kleine klassen"],w:"https://www.winford.nl/onze-scholen/voortgezet-onderwijs/winford-utrecht/",u:"https://www.devogids.nl/27862/winford-utrecht/"},
+ {id:"ranitz",n:"College Ariane de Ranitz",lv:["t","h","v"],r:"Onbekend",a:"Speciaal onderwijs",type:"vso",tags:["VSO","Toelaatbaarheidsverklaring nodig"],w:"https://www.collegearianederanitz.nl/",u:SOK+"33151/college-ariane-de-ranitz"},
+ {id:"kromme",n:"Kromme Rijn College",lv:["pro","b","k","t","h","v"],r:"Openbaar",a:"Speciaal onderwijs",type:"vso",tags:["VSO cluster 4","Klein, ca. 100–120 leerlingen","Doel: terug naar regulier"],w:"https://www.krommerijncollege.nl/",u:SOK+"23803/kromme-rijn-college"},
+ {id:"stip",n:"STIP VSO Utrecht",lv:[],r:"Onbekend",a:"Speciaal onderwijs",type:"vso",tags:["VSO","Toelaatbaarheidsverklaring nodig"],w:"https://www.stipvso.nl/",u:SOK+"7991/stip-vso-utrecht"},
  {id:"kentalis",n:"Kentalis College Utrecht",lv:[],r:"Onbekend",a:"Speciaal onderwijs",type:"vso",tags:["VSO cluster 2","Taal, spraak, gehoor"],u:SOK+"23944/kentalis-college-utrecht"},
- {id:"redl",n:"Prof. Fritz Redlschool",lv:[],r:"Onbekend",a:"Speciaal onderwijs",type:"vso",tags:["VSO","Langdurig zieke kinderen"],u:SOK+"70843/prof-fritz-redlschool-voor-langdurig-zieke-kinderen"}
+ {id:"redl",n:"Prof. Fritz Redlschool",lv:[],r:"Onbekend",a:"Speciaal onderwijs",type:"vso",tags:["VSO","Langdurig zieke kinderen"],w:"https://www.redl.nl/",u:SOK+"70843/prof-fritz-redlschool-voor-langdurig-zieke-kinderen"}
 ];
 const byId = Object.fromEntries(S.map(s=>[s.id,s]));
 let HOME=null; /* wordt per bezoeker ingesteld, alleen in de eigen browser */
@@ -400,7 +437,7 @@ function card(s){
     '<div class="actions"><button class="btn'+(inC?' on':'')+'" data-cmp="'+s.id+'">'+(inC?'In vergelijking':'Vergelijk')+'</button>'+
     '<button class="btn'+(inS?' on':'')+'" data-short="'+s.id+'">'+(inS?'Op shortlist':'Shortlist')+'</button>'+
     (st.hidden.includes(s.id)?'<button class="btn primary" data-unhide="'+s.id+'">Terugzetten</button>':'<button class="btn" data-hide="'+s.id+'" title="Verberg deze school in de lijst en de agenda">Wegfilteren</button>')+'</div>'+
-    '<div class="ext"><a href="'+s.u+'" target="_blank" rel="noopener">Cijfers en inspectie</a> &nbsp; <a href="'+routeUrl(s)+'" target="_blank" rel="noopener">Fietsroute</a></div>'+
+    '<div class="ext">'+(s.w?'<a href="'+s.w+'" target="_blank" rel="noopener">Website</a> &nbsp; ':'')+'<a href="'+s.u+'" target="_blank" rel="noopener">Cijfers en inspectie</a> &nbsp; <a href="'+routeUrl(s)+'" target="_blank" rel="noopener">Fietsroute</a></div>'+
   '</article>';
 }
 function renderList(){
@@ -446,7 +483,7 @@ function renderCompare(){
     row("Open dag",s=>st.visited[s.id]?"Bezocht":"Nog niet")+
     row("Jouw score",s=>{const sc=scoreOf(s.id);return sc.v?'<strong>'+sc.v.toFixed(1)+'</strong> / 5':'<span class="small">Nog niet beoordeeld</span>'})+
     row("Notities",s=>st.notes[s.id]?esc(st.notes[s.id]).replace(/\n/g,"<br>"):'<span class="small">Geen</span>')+
-    row("Meer",s=>'<a class="ext" href="'+s.u+'" target="_blank" rel="noopener">Cijfers en inspectie</a>')+
+    row("Meer",s=>(s.w?'<a class="ext" href="'+s.w+'" target="_blank" rel="noopener">Website</a> &nbsp; ':'')+'<a class="ext" href="'+s.u+'" target="_blank" rel="noopener">Cijfers en inspectie</a>')+
   '</tbody></table></div>';
 }
 function renderWeigh(){
@@ -591,7 +628,7 @@ function renderAgenda(){
   if(!EVENTS.length){
     const list=visible().filter(s=>!s.type||s.type==="part");
     el.innerHTML='<h2>Open dagen en informatieavonden</h2><p class="sub">De actuele data staan in de Open Dagen Planner van De VO Gids. Daar kun je filteren op niveau, datum en afstand en een overzicht als pdf maken. Zoek per school ook altijd even op de eigen site, want daar staat of je je moet aanmelden.</p><p><a class="btn primary" style="display:inline-block;text-decoration:none" href="'+PLANNER+'" target="_blank" rel="noopener">Open Dagen Planner Utrecht</a></p>'+
-      '<h3 class="ag-month">Per school</h3>'+list.map(s=>'<div class="ev"><div class="evd"><b style="font-size:1.1rem">'+(s.min!=null?s.min+'′':'')+'</b><span>'+(s.min!=null?'fietsen':'')+'</span></div><div><h4>'+esc(s.n)+'</h4><div class="ext"><a href="https://www.google.com/search?q='+encodeURIComponent('open dag '+s.n+' Utrecht')+'" target="_blank" rel="noopener">Open dag opzoeken</a> &nbsp; <a href="'+s.u+'" target="_blank" rel="noopener">Scholen op de kaart</a> &nbsp; <label class="small"><input type="checkbox" data-vis="'+s.id+'"'+(st.visited[s.id]?' checked':'')+'> Open dag bezocht</label></div></div></div>').join("");
+      '<h3 class="ag-month">Per school</h3>'+list.map(s=>'<div class="ev"><div class="evd"><b style="font-size:1.1rem">'+(s.min!=null?s.min+'′':'')+'</b><span>'+(s.min!=null?'fietsen':'')+'</span></div><div><h4>'+esc(s.n)+'</h4><div class="ext">'+(s.w?'<a href="'+s.w+'" target="_blank" rel="noopener">Website</a> &nbsp; ':'')+'<a href="https://www.google.com/search?q='+encodeURIComponent('open dag '+s.n+' Utrecht')+'" target="_blank" rel="noopener">Open dag opzoeken</a> &nbsp; <a href="'+s.u+'" target="_blank" rel="noopener">Scholen op de kaart</a> &nbsp; <label class="small"><input type="checkbox" data-vis="'+s.id+'"'+(st.visited[s.id]?' checked':'')+'> Open dag bezocht</label></div></div></div>').join("");
     return;
   }
   const visIds=new Set(visible().map(s=>s.id));
@@ -610,7 +647,7 @@ function renderAgenda(){
     h+='<div class="ev'+(e.big?' big':'')+(e.d===todayISO?' today':'')+'"><div class="evd"><span>'+DOW[d.getDay()]+'</span><b>'+d.getDate()+'</b><span>'+MON[d.getMonth()]+'</span></div><div>'+
       '<h4>'+esc(s.n)+'</h4><p><b style="color:var(--ink)">'+esc(e.t)+'</b>'+(e.a?', '+e.a+(e.b?'–'+e.b:''):', tijd: zie website')+(s.min!=null?', '+s.min+' min fietsen':'')+'</p>'+
       (e.note?'<p>'+esc(e.note)+'</p>':'')+
-      '<div class="ext"><a href="'+gcal(e)+'" target="_blank" rel="noopener">In Google Agenda</a> &nbsp; <a href="'+routeUrl(s)+'" target="_blank" rel="noopener">Fietsroute</a> &nbsp; <button class="linkbtn" data-short="'+s.id+'">'+(st.short.includes(s.id)?'Van shortlist halen':'Op shortlist')+'</button></div></div></div>';});
+      '<div class="ext">'+(s.w?'<a href="'+s.w+'" target="_blank" rel="noopener">Website</a> &nbsp; ':'')+'<a href="'+gcal(e)+'" target="_blank" rel="noopener">In Google Agenda</a> &nbsp; <a href="'+routeUrl(s)+'" target="_blank" rel="noopener">Fietsroute</a> &nbsp; <button class="linkbtn" data-short="'+s.id+'">'+(st.short.includes(s.id)?'Van shortlist halen':'Op shortlist')+'</button></div></div></div>';});
   const missing=S.filter(s=>!s.type&&!EVENTS.some(e=>e.id===s.id)).map(s=>s.n);
   h+='<div class="note"><strong>Niet in de agenda.</strong> Van '+missing.join(", ")+' stonden geen data in de opgehaalde lijst. Dat komt waarschijnlijk door het filter (zonder categoraal gymnasium en praktijkonderwijs). Kijk voor deze scholen op hun eigen site.</div>';
   el.innerHTML=h;

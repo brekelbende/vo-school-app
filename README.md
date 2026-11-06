@@ -8,10 +8,13 @@ Live: https://vo.wurq.nl
 
 Er is geen server en er wordt niets opgeslagen buiten je eigen browser (localStorage). Je adres gaat alleen eenmalig naar de PDOK Locatieserver om er coördinaten van te maken. Via "Opslaan als bestand" kun je je keuzes exporteren als JSON.
 
+Werkt de app niet goed (bijvoorbeeld door oude opgeslagen gegevens)? Met "Alles wissen" onderaan de pagina, of door `?reset` achter het adres te zetten, wis je alle keuzes in deze browser en begin je opnieuw.
+
 ## Bronnen
 
 - Examencijfers: DUO Open Onderwijsdata, geslaagden, gezakten en examencijfers 2024-2025 (CC-BY 4.0)
 - Schoollijst: Scholen op de kaart en De VO Gids
+- Websites van de scholen: eigen opzoekwerk (november 2026)
 - Adressen scholen: Google Maps; eigen adres: PDOK Locatieserver
 - Open dagen: link naar de Open Dagen Planner van De VO Gids
 
