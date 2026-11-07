@@ -316,6 +316,32 @@ textarea{width:100%;min-height:72px;border:0;border-radius:8px;padding:10px 12px
 .pscores .pct-low{background:var(--warn-bg);border-radius:9999px;padding:3px 10px;font-weight:600;font-size:12px}
 .pnote{margin-top:8px;padding:10px 14px;border-radius:12px;background:var(--soft);font-size:14px;color:var(--text)}
 .pnote b{color:var(--ink);font-weight:600}
+/* Checklist open dag (per school op de shortlist) */
+.ckfold{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+.ckfold>summary{font-size:15px;gap:6px 10px}
+.ckfold[open]>summary{margin-bottom:10px}
+.ckfold .cks{font-weight:500;font-size:14px;color:var(--muted)}
+.ckfold .cks b{color:var(--ink);font-weight:600}
+.ckfold summary .pscores{margin:0;font-weight:500}
+.ckintro{margin:0 0 8px;font-size:14px;color:var(--text);max-width:68ch}
+.cklegend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 0 14px;font-size:13px;color:var(--muted)}
+.cklegend span{display:inline-flex;align-items:center;gap:6px}
+.cklegend b{display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:6px;background:var(--soft);color:var(--ink);font-size:12px}
+.cktabs{display:inline-flex;gap:2px;background:var(--soft);border-radius:8px;padding:3px;margin-bottom:4px}
+.cktab{border:0;background:transparent;border-radius:6px;padding:6px 16px;min-height:32px;font-weight:600;font-size:14px;color:var(--text);cursor:pointer;white-space:nowrap}
+.cktab:hover{background:var(--surface)}
+.cktab[aria-selected="true"]{background:var(--primary);color:var(--on-primary);box-shadow:var(--sh)}
+.cktab small{font-size:12px;font-weight:500;margin-left:4px}
+.ckth{display:flex;justify-content:space-between;align-items:baseline;gap:2px 12px;flex-wrap:wrap;margin:14px 0 0;padding:8px 12px;background:var(--soft);border-radius:8px;font-size:14px;font-weight:600;color:var(--ink);line-height:1.4}
+.ckth span{font-weight:500;font-size:13px;color:var(--muted)}
+.ckq{display:flex;justify-content:space-between;align-items:center;gap:6px 16px;padding:8px 0 8px 12px;border-bottom:1px solid var(--line)}
+.ckq>span{flex:1;min-width:0;font-size:14px;color:var(--text)}
+.ckq .rate{flex:0 0 auto}
+.cktot{margin:12px 0 0;padding:0 12px;font-size:14px;font-weight:600;color:var(--ink)}
+.cktot span{font-weight:500;color:var(--muted)}
+.ckfoot{margin:12px 0 0;font-size:13px;color:var(--muted)}
+.ckfoot a{color:var(--primary);font-weight:600;text-decoration:none}
+.ckfoot a:hover{text-decoration:underline}
 .note{margin-top:32px;padding:20px 24px 20px 76px;background:var(--soft);border-radius:12px;font-size:14px;color:var(--text);max-width:none;position:relative;min-height:80px}
 .note::before{content:"";position:absolute;left:20px;top:20px;width:40px;height:40px;border-radius:50%;background:var(--surface) var(--icon-info) no-repeat 50% 50%/20px}
 .note strong{color:var(--ink);font-size:16px;font-weight:600;display:block;margin-bottom:2px}
@@ -400,6 +426,10 @@ footer .linkbtn,footer a.ext{color:var(--primary);font-weight:600;font-size:13px
   .criteria{padding:4px 16px 16px}
   .crit{grid-template-columns:1fr auto}
   .crit .weight{grid-column:1/-1;justify-self:start}
+  .ckq{flex-direction:column;align-items:flex-start;padding-left:4px}
+  .ckth{padding:8px 10px}
+  .cktot{padding:0 4px}
+  .cksep,.cktab .ckn{display:none}
   .note{padding:16px 16px 16px 64px}
   .note::before{left:14px;top:16px;width:36px;height:36px}
   table{min-width:0;width:max-content;table-layout:auto}
@@ -684,7 +714,7 @@ const DEFAULT_CRIT=[
   {id:"c4",n:"Extra's (sport, kunst, tto)",w:1},
   {id:"c5",n:"Wat mijn kind zelf vindt",w:3}
 ];
-let st={compare:[],short:[],crit:DEFAULT_CRIT,rate:{},notes:{},visited:{},exam:null,emap:{},hidden:[]};
+let st={compare:[],short:[],crit:DEFAULT_CRIT,rate:{},notes:{},visited:{},exam:null,emap:{},hidden:[],check:{}};
 try{const raw=localStorage.getItem(KEY); if(raw){st=Object.assign(st,JSON.parse(raw));}}catch(e){}
 HOME=st.home||null; recalcDist();
 /* Ingebouwde examencijfers worden niet in localStorage bewaard maar bij elk laden uit EMBED_EXAM gehaald (st.examBuiltin).
@@ -698,6 +728,43 @@ function normExam(){
   }else st.examBuiltin=false;
 }
 normExam();
+/* ---- Checklist open dag: vragen. Vraag-ids zijn <lijst>-<thema>-<volgnummer>; volgorde dus niet wijzigen. ---- */
+const CK_LBL=["niet belangrijk","nee","een beetje","ja"];
+const CK={
+  o:{n:"Ouders",t:[
+    ["prak","Praktisch",["Veilige fiets- of ov-route naar school","Leerlingen blijven in pauzes en tussenuren op of bij het schoolterrein","Gebouw en schoolplein zijn goed onderhouden","Gezond eten in de kantine","Goede sportvoorzieningen op of vlak bij school"]],
+    ["sfeer","Sfeer",["De sfeer is prettig en past bij ons kind","Betrokken docenten en enthousiaste leerlingen","Ruimte voor talenten, bijvoorbeeld extra activiteiten of keuzevakken"]],
+    ["org","Organisatie",["Het type brugklas past bij ons kind","De klassen zijn niet te groot","De rol van de mentor is duidelijk","Heldere aanpak van te laat komen en verzuim","De identiteit of levensbeschouwing van de school past bij ons gezin","Ouders hebben inspraak, bijvoorbeeld via ouderraad of MR"]],
+    ["beg","Begeleiding",["We leren de mentor al vóór de zomer kennen","Introductiedagen of een kamp aan het begin van de brugklas","Ouderavonden op goede momenten en niet te weinig","Goede ondersteuning bij leerproblemen zoals dyslexie of dyscalculie","Duidelijke aanpak van pesten","Huiswerkbegeleiding is mogelijk"]],
+    ["leren","Leren",["Vaste uren om zelfstandig te werken","Bij goede resultaten een niveau hoger of een extra vak","Werken met laptop of tablet, op school en thuis","Projecten over vakken of klassen heen","Er zijn toetsweken"]],
+    ["cijf","Cijfers en voortgang",["Ouders kunnen cijfers en voortgang online volgen","Begrip voor een moeizame start","Duidelijke overgangsregels","Ouders horen het op tijd als het minder gaat","Aandacht voor doorstromen naar een hoger niveau"]],
+    ["act","Activiteiten",["Elk jaar sport-, cultuur- en excursiedagen","Buitenlandreis of uitwisseling in de bovenbouw"]]
+  ]},
+  k:{n:"Kind",t:[
+    ["prak","Praktisch",["Ik kom er makkelijk met de fiets of de bus","Er zijn kluisjes en een goede fietsenstalling","Lekker eten in de kantine","Een fijne gymzaal, met extra's zoals een klimwand","Een goede bieb of mediatheek"]],
+    ["sfeer","Sfeer",["Ik voel me hier op mijn gemak","Leuke projecten waarin je samenwerkt","Ik zie hier kinderen met wie ik vrienden kan worden"]],
+    ["start","Start",["Ik leer mijn mentor en klas al vóór de zomer kennen","Een leuke introductie in de eerste weken","Ik leer hier plannen en mijn huiswerk bijhouden"]],
+    ["veil","Veiligheid",["Iedereen gaat respectvol met elkaar om","Een rustige plek om in een tussenuur te werken","Er wordt opgetreden tegen pesten"]],
+    ["leren","Leren",["De brugklas past bij mij, bijvoorbeeld een brede brugklas","Tijd om zelfstandig te werken","Werken met laptop of tablet","Huiswerk al op school kunnen maken","Als het goed gaat een niveau hoger of een extra vak","Leuke extra keuzevakken","Begrip voor dyslexie, dyscalculie of iets anders waar ik moeite mee heb","De profielen die ik later wil kiezen"]],
+    ["cijf","Cijfers",["Ik kan mijn cijfers online zien","Een herkansing als een toets mislukt","Ze helpen me echt om goede cijfers te halen","Ook oefentoetsen om van te leren, niet alleen voor een cijfer"]],
+    ["act","Activiteiten",["Schoolfeesten","Activiteiten na school, zoals sport, film of workshops","Uitjes naar bijvoorbeeld theater of museum","Uitwisseling met een school in het buitenland"]]
+  ]}
+};
+const ckIds=(l,t)=>t[2].map((q,i)=>l+"-"+t[0]+"-"+(i+1));
+const ckAll=l=>CK[l].t.flatMap(t=>ckIds(l,t));
+/* Eén sanitizer voor opgeslagen, geïmporteerde en gedeelde checklists: alleen plain objects,
+   bekende vraag-ids en gehele getallen 0-3; al het andere wordt weggegooid. */
+const isObj=x=>x!==null&&typeof x==="object"&&!Array.isArray(x);
+function cleanCheck(c){const out={};if(!isObj(c))return out;
+  Object.keys(c).forEach(id=>{if(id==="__proto__")return;const e=c[id];if(!isObj(e))return;const r={};
+    ["o","k"].forEach(l=>{const a=e[l];if(!isObj(a))return;const known=new Set(ckAll(l)),x={};
+      Object.keys(a).forEach(q=>{const v=a[q];if(known.has(q)&&Number.isInteger(v)&&v>=0&&v<=3)x[q]=v});
+      if(Object.keys(x).length)r[l]=x;});
+    if(Object.keys(r).length)out[id]=r;});
+  return out;}
+function normCheck(){st.check=cleanCheck(st.check);
+  if(isObj(st.others))Object.values(st.others).forEach(o=>{if(isObj(o))o.check=cleanCheck(o.check)});}
+normCheck();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st.examBuiltin?Object.assign({},st,{exam:null}):st))}catch(e){}};
 
 const f={q:"",maxMin:null,sort:"name",level:new Set(),levelMode:"all",richting:new Set(),aanpak:new Set(),part:false,int:false,vso:false};
@@ -823,6 +890,7 @@ function renderCompare(){
     row("Open dag",s=>st.visited[s.id]?"Bezocht":"Nog niet",'Al bezocht?')+
     grp("Jullie afweging")+
     row("Jouw score",s=>{const sc=scoreOf(s.id);if(!sc.v)return '<span class="small">Nog niet beoordeeld</span>';const h='<strong class="cv">'+sc.v.toFixed(1)+'</strong> / 5';return sc.v===scBest?best(h,'Hoogst'):h},'Gewogen, uit 5')+
+    row("Checklist open dag",s=>{const t=ckShort(st.check[s.id]);return t?esc(t):'<span class="small">–</span>'},'Telt los van de score')+
     row("Notities",s=>st.notes[s.id]?esc(st.notes[s.id]).replace(/\n/g,"<br>"):'<span class="small">Geen</span>')+
     row("Meer",s=>(s.w?'<a class="ext" href="'+s.w+'" target="_blank" rel="noopener">Website</a> &nbsp; ':'')+'<a class="ext" href="'+s.u+'" target="_blank" rel="noopener">Cijfers en inspectie</a>')+
   '</tbody></table></div>';
@@ -847,7 +915,7 @@ function renderWeigh(){
       return '<div class="rcard"><div class="rhead"><span class="rnk" aria-label="Plek '+(i+1)+'">'+(i+1)+'</span><h3>'+esc(s.n)+'</h3><div class="score">'+(shown?shown.toFixed(1).replace(".",","):'–')+' <small>/ 5'+(partners.length?' gem.':'')+'</small></div></div>'+
       '<div class="bar"><b style="width:'+(shown?shown/5*100:0)+'%"></b></div>'+pline+
       st.crit.filter(c=>c.w>0).map(c=>'<div class="rrow"><span>'+esc(c.n)+'</span><div class="rate" role="group" aria-label="'+esc(c.n)+'">'+[1,2,3,4,5].map(v=>'<button aria-pressed="'+(r[c.id]===v)+'" data-r="'+id+'" data-rc="'+c.id+'" data-rv="'+v+'">'+v+'</button>').join("")+'</div></div>').join("")+
-      '<div class="rrow"><label class="small"><input type="checkbox" data-vis="'+id+'"'+(st.visited[id]?' checked':'')+'> Open dag bezocht</label><button class="x" data-short="'+id+'">Van shortlist halen</button></div>'+
+      '<div class="rrow"><label class="small"><input type="checkbox" data-vis="'+id+'"'+(st.visited[id]?' checked':'')+'> Open dag bezocht</label><button class="x" data-short="'+id+'">Van shortlist halen</button></div>'+ckBlock(id)+
       '<div class="notebox"><label class="lbl" for="nt-'+id+'">Notitie</label><textarea id="nt-'+id+'" placeholder="Notities: indruk, vragen, wat je kind ervan vond" data-note="'+id+'">'+esc(st.notes[id]||"")+'</textarea></div>'+pnotes+'</div>';
     }).join("")+'</div>';
   }
@@ -1077,8 +1145,8 @@ function exportData(){
 function importData(file){
   const rd=new FileReader();rd.onload=()=>{try{const j=JSON.parse(rd.result);if(j.app!=="vo-utrecht"||!j.data)throw 0;
     if(!confirm("Je huidige keuzes in deze browser worden vervangen door die uit het bestand. Doorgaan?"))return;
-    st=Object.assign({compare:[],short:[],crit:DEFAULT_CRIT,rate:{},notes:{},visited:{},exam:null,emap:{},hidden:[]},j.data);
-    normExam();
+    st=Object.assign({compare:[],short:[],crit:DEFAULT_CRIT,rate:{},notes:{},visited:{},exam:null,emap:{},hidden:[],check:{}},j.data);
+    normExam();normCheck();
     HOME=st.home||null;recalcDist();save();renderAll();alert("Keuzes geladen.");
   }catch(e){alert("Dit is geen geldig bestand van deze app.")}};rd.readAsText(file);
 }
@@ -1093,7 +1161,7 @@ async function packShare(obj){const raw=new TextEncoder().encode(JSON.stringify(
 async function unpackShare(t){const kind=t[0],u=b64u.dec(t.slice(1));let raw=u;
   if(kind==="z"){if(!window.DecompressionStream)throw new Error("Je browser kan deze link niet openen.");raw=new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());}
   return JSON.parse(new TextDecoder().decode(raw));}
-function myPayload(){return {app:"vo-utrecht",v:1,from:st.me||"Partner",at:new Date().toISOString(),short:st.short,visited:Object.keys(st.visited).filter(k=>st.visited[k]),crit:st.crit,rate:st.rate,notes:st.notes};}
+function myPayload(){return {app:"vo-utrecht",v:1,from:st.me||"Partner",at:new Date().toISOString(),short:st.short,visited:Object.keys(st.visited).filter(k=>st.visited[k]),crit:st.crit,rate:st.rate,notes:st.notes,check:st.check};}
 function scoreWith(crit,rate){let tw=0,sum=0;crit.forEach(c=>{const v=rate&&rate[c.id];if(v&&c.w>0){tw+=c.w;sum+=c.w*v}});return tw?sum/tw:null}
 function partnerScores(id){return Object.entries(st.others||{}).map(([n,o])=>({n,v:scoreWith(o.crit||[],(o.rate||{})[id]),note:(o.notes||{})[id]}));}
 function avgScore(id){const all=[scoreOf(id).v,...partnerScores(id).map(p=>p.v)].filter(v=>v!=null);return all.length?all.reduce((a,b)=>a+b,0)/all.length:null}
@@ -1135,11 +1203,11 @@ async function copySummary(){const t=summaryText();
   try{await navigator.clipboard.writeText(t);modal('<h3>Gekopieerd</h3><p>De samenvatting staat op je klembord.</p><div class="row"><button class="btn primary" onclick="this.closest(\'.modal\').remove()">Oké</button></div>')}catch(e){modal('<h3>Samenvatting</h3><textarea style="min-height:160px">'+esc(t)+'</textarea>')}}
 function mergeIn(p){
   st.others=st.others||{};
-  st.others[p.from]={crit:p.crit||[],rate:p.rate||{},notes:p.notes||{},at:p.at};
+  st.others[p.from]={crit:p.crit||[],rate:p.rate||{},notes:p.notes||{},check:cleanCheck(p.check),at:p.at};
   (p.short||[]).forEach(id=>{if(byId[id]&&!st.short.includes(id))st.short.push(id)});
   (p.visited||[]).forEach(id=>{st.visited[id]=true});
 }
-function replaceWith(p){st.short=(p.short||[]).filter(id=>byId[id]);st.crit=p.crit&&p.crit.length?p.crit:DEFAULT_CRIT;st.rate=p.rate||{};st.notes=p.notes||{};st.visited={};(p.visited||[]).forEach(id=>st.visited[id]=true);}
+function replaceWith(p){st.short=(p.short||[]).filter(id=>byId[id]);st.crit=p.crit&&p.crit.length?p.crit:DEFAULT_CRIT;st.rate=p.rate||{};st.notes=p.notes||{};st.check=cleanCheck(p.check);st.visited={};(p.visited||[]).forEach(id=>st.visited[id]=true);}
 async function checkIncoming(){
   if(!location.hash.startsWith("#d="))return;
   const code=location.hash.slice(3);history.replaceState(null,"",location.pathname+location.search);
@@ -1149,10 +1217,45 @@ async function checkIncoming(){
   const m=modal('<h3>Lijst van '+esc(p.from||"je partner")+'</h3><p>'+(p.short||[]).length+' scholen op de shortlist, '+rated+' beoordeeld.</p><p><b>Samenvoegen</b> zet de scholen erbij op jouw shortlist en toont '+esc(p.from||"zijn of haar")+' scores en notities naast de jouwe. <b>Vervangen</b> gebruik je om je eigen lijst naar een ander apparaat over te zetten.</p><div class="row"><button class="btn primary" id="mMerge">Samenvoegen</button><button class="btn" id="mRepl">Vervangen</button><button class="btn" id="mNo">Annuleren</button></div>');
   if(own){m.querySelector("#mRepl").classList.add("primary");m.querySelector("#mMerge").classList.remove("primary");}
   m.querySelector("#mMerge").onclick=()=>{mergeIn(p);save();renderAll();m.remove();show("weigh")};
-  m.querySelector("#mRepl").onclick=()=>{if(!confirm("Je eigen shortlist, scores en notities in deze browser worden vervangen. Doorgaan?"))return;replaceWith(p);if(!st.me&&p.from)st.me=p.from;save();renderAll();m.remove();show("weigh")};
+  m.querySelector("#mRepl").onclick=()=>{if(!confirm("Je eigen shortlist, scores, notities en checklist in deze browser worden vervangen. Doorgaan?"))return;replaceWith(p);if(!st.me&&p.from)st.me=p.from;save();renderAll();m.remove();show("weigh")};
   m.querySelector("#mNo").onclick=()=>m.remove();
 }
 
+
+/* ---- Checklist open dag: weergave, los van de 1-5-score ---- */
+/* som van antwoorden 1-3; max = 3 x aantal vragen met 1-3. 0 (niet belangrijk) en onbeantwoord tellen niet mee. */
+/* n = aantal beantwoorde vragen (ook 0), voor de voortgang. */
+function ckSum(ans,ids){let s=0,m=0,n=0;ids.forEach(i=>{const v=isObj(ans)?ans[i]:undefined;if(!Number.isInteger(v)||v<0||v>3)return;n++;if(v>0){s+=v;m+=3}});return {s,m,n};}
+const ckPct=r=>r.m?Math.round(r.s/r.m*100):null;
+const ckFmt=r=>r.m?r.s+" / "+r.m+" ("+ckPct(r)+"%)":r.n?"–":"nog niet ingevuld";
+/* Kort: "75% (12/32)"; alleen 0-antwoorden: "– (3/32)"; niets beantwoord: null. */
+function ckPart(c,l){const r=ckSum(isObj(c)?c[l]:null,ckAll(l));return r.n?(r.m?ckPct(r)+"%":"–")+" ("+r.n+"/"+ckAll(l).length+")":null;}
+function ckShort(c){const o=ckPart(c,"o"),k=ckPart(c,"k");return (o||k)?"ouders "+(o||"–")+" · kind "+(k||"–"):null;}
+const ckTab={};
+function ckBlock(id){
+  const c=st.check[id]||{}, tab=ckTab[id]||"o", partners=Object.entries(st.others||{});
+  let sum;
+  if(partners.length){
+    const who=[[st.me||"Jij",c]].concat(partners.map(([n,o])=>[n,(o.check||{})[id]]));
+    sum='<span class="pscores">'+who.map(([n,x])=>'<span class="pp"><i aria-hidden="true">'+esc(n.charAt(0).toUpperCase())+'</i>'+esc(n)+': <b>'+esc(ckShort(x)||'–')+'</b></span>').join("")+'</span>';
+  }else{const t=ckShort(c);sum='<span class="cks"><span class="cksep" aria-hidden="true">· </span>'+(t?'<b>'+esc(t)+'</b>':'nog niet ingevuld')+'</span>';}
+  const tabs='<div class="cktabs" role="tablist" aria-label="Checklist voor">'+["o","k"].map(l=>{const r=ckSum(c[l],ckAll(l));
+    return '<button type="button" class="cktab" role="tab" id="ckt-'+id+'-'+l+'" aria-controls="ckp-'+id+'-'+l+'" aria-selected="'+(tab===l)+'" tabindex="'+(tab===l?0:-1)+'" data-ckt="'+id+'" data-ckl="'+l+'">'+CK[l].n+(r.n?'<small>'+(r.m?ckPct(r)+'%':'–')+'<span class="ckn"> ('+r.n+'/'+ckAll(l).length+')</span></small>':'')+'</button>'}).join("")+'</div>';
+  const panel=l=>{const a=c[l]||{},tot=ckSum(a,ckAll(l));
+    return '<div class="ckpanel" role="tabpanel" id="ckp-'+id+'-'+l+'" aria-labelledby="ckt-'+id+'-'+l+'"'+(tab===l?'':' hidden')+'>'+
+      CK[l].t.map(t=>{const ids=ckIds(l,t);
+        return '<h4 class="ckth">'+t[1]+'<span>'+ckFmt(ckSum(a,ids))+'</span></h4>'+t[2].map((q,i)=>{const qi=ids[i],v=a[qi];
+          return '<div class="ckq"><span>'+esc(q)+'</span><div class="rate" role="group" aria-label="'+esc(q)+'">'+[0,1,2,3].map(n=>'<button type="button" aria-pressed="'+(v===n)+'" data-ck="'+id+'" data-ckl="'+l+'" data-cki="'+qi+'" data-ckv="'+n+'" title="'+CK_LBL[n]+'" aria-label="'+n+': '+CK_LBL[n]+'">'+n+'</button>').join("")+'</div></div>'}).join("")}).join("")+
+      '<p class="cktot">Totaal '+CK[l].n.toLowerCase()+': '+ckFmt(tot)+' <span>· '+tot.n+' van '+ckAll(l).length+' vragen beantwoord</span></p></div>';};
+  return '<details class="fold ckfold" data-fold="ck-'+id+'"'+(foldOpen("ck-"+id,false)?' open':'')+'><summary>Checklist open dag '+sum+'</summary>'+
+    '<p class="ckintro">Geef per vraag aan hoe deze school het doet (tik nogmaals op een cijfer om je antwoord te wissen); dit telt niet mee in de score hierboven.</p>'+
+    '<p class="cklegend">'+CK_LBL.map((t,n)=>'<span><b>'+n+'</b>'+t+'</span>').join("")+'</p>'+
+    tabs+panel("o")+panel("k")+
+    '<p class="ckfoot">Gebaseerd op de checklists voor ouders en leerlingen uit <a href="https://www.devogids.nl/" target="_blank" rel="noopener">De VO Gids</a></p></details>';
+}
+/* Alleen het checklistblok opnieuw tekenen, zodat focus en scrollpositie blijven staan. */
+function ckRefresh(id,focusSel){const d=document.querySelector('details[data-fold="ck-'+id+'"]');if(!d)return;d.outerHTML=ckBlock(id);
+  const el=focusSel&&document.querySelector(focusSel);if(el)el.focus({preventScroll:true});}
 
 /* ---- Inklapbare blokken, open/dicht wordt onthouden ---- */
 function foldOpen(key,def){return st.fold&&key in st.fold?st.fold[key]:def}
@@ -1189,8 +1292,17 @@ document.addEventListener("click",e=>{
   if(b.dataset.unhide){st.hidden=st.hidden.filter(x=>x!==b.dataset.unhide);if(!st.hidden.length)f.showHidden=false;save();renderAll();return;}
   if(b.dataset.w){const c=st.crit.find(c=>c.id===b.dataset.w);c.w=+b.dataset.wv;save();renderWeigh();renderCompare();return;}
   if(b.dataset.r){const id=b.dataset.r;st.rate[id]=st.rate[id]||{};const v=+b.dataset.rv;st.rate[id][b.dataset.rc]=st.rate[id][b.dataset.rc]===v?undefined:v;save();renderWeigh();renderCompare();return;}
+  if(b.dataset.ck){const id=b.dataset.ck,l=b.dataset.ckl,q=b.dataset.cki,v=+b.dataset.ckv;
+    const c=st.check[id]=st.check[id]||{};c[l]=c[l]||{};if(c[l][q]===v)delete c[l][q];else c[l][q]=v;
+    save();ckRefresh(id,'button[data-ck="'+id+'"][data-cki="'+q+'"][data-ckv="'+v+'"]');renderCompare();return;}
+  if(b.dataset.ckt){ckTab[b.dataset.ckt]=b.dataset.ckl;ckRefresh(b.dataset.ckt,'button[data-ckt="'+b.dataset.ckt+'"][data-ckl="'+b.dataset.ckl+'"]');return;}
   if(b.dataset.cdel){st.crit=st.crit.filter(c=>c.id!==b.dataset.cdel);save();renderWeigh();renderCompare();return;}
   if(b.id==="addCrit"){st.crit.push({id:"c"+Date.now(),n:"Nieuw criterium",w:2});save();renderWeigh();const ins=document.querySelectorAll("[data-cname]");ins[ins.length-1].select();return;}
+});
+document.addEventListener("keydown",e=>{
+  const t=e.target;if(!t.dataset||!t.dataset.ckt||!["ArrowLeft","ArrowRight","Home","End"].includes(e.key))return;
+  e.preventDefault();const id=t.dataset.ckt,l=e.key==="Home"?"o":e.key==="End"?"k":(t.dataset.ckl==="o"?"k":"o");
+  ckTab[id]=l;ckRefresh(id,'button[data-ckt="'+id+'"][data-ckl="'+l+'"]');
 });
 document.addEventListener("change",e=>{
   const t=e.target;
