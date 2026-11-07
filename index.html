@@ -406,6 +406,8 @@ footer .linkbtn,footer a.ext{color:var(--primary);font-weight:600;font-size:13px
 .next-line a:hover .cal-add,.next-line a:focus-visible .cal-add{text-decoration:underline}
 .next-line a:hover b{text-decoration:underline}
 .cal-add{color:var(--primary);font-weight:600;white-space:nowrap;margin-left:4px}
+.lvmode-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lvmode button{width:auto;padding:0 12px;font-size:13px}
 </style>
 </head>
 <body>
@@ -608,7 +610,7 @@ HOME=st.home||null; recalcDist();
 if(!st.exam){st.exam=EMBED_EXAM;st.emap=Object.assign({},DEFAULT_EMAP);}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 
-const f={q:"",maxMin:null,sort:"name",level:new Set(),richting:new Set(),aanpak:new Set(),part:false,int:false,vso:false};
+const f={q:"",maxMin:null,sort:"name",level:new Set(),levelMode:"all",richting:new Set(),aanpak:new Set(),part:false,int:false,vso:false};
 if(HOME)f.sort="dist";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -628,7 +630,8 @@ function visible(allTypes){
     if(!allTypes&&s.type==="part"&&!f.part)return false;
     if(!allTypes&&s.type==="int"&&!f.int)return false;
     if(!allTypes&&s.type==="vso"&&!f.vso)return false;
-    if(f.level.size&&![...f.level].every(k=>s.lv.includes(k)))return false;
+    if(f.level.size){const has=k=>s.lv.includes(k)||(k==="v"&&s.lv.includes("g")); /* een gymnasium is ook vwo */
+      const ks=[...f.level];if(f.levelMode==="any"?!ks.some(has):!ks.every(has))return false;}
     if(f.richting.size&&!f.richting.has(s.r))return false;
     if(f.aanpak.size&&!f.aanpak.has(s.a))return false;
     if(f.maxMin&&!(s.min!=null&&s.min<=f.maxMin))return false;
@@ -642,7 +645,11 @@ function renderFilters(){
   const fl=document.getElementById("fLevel");
   chips(fl,LV.map(l=>({key:l.k,label:l.full})),k=>{f.level.has(k)?f.level.delete(k):f.level.add(k)},k=>f.level.has(k));
   const old=fl.querySelector(".chip-note");if(old)old.remove();
-  if(f.level.size>1){const n=document.createElement("span");n.className="small chip-note";n.textContent="Scholen die al deze niveaus aanbieden";fl.appendChild(n);}
+  if(f.level.size>1){const n=document.createElement("div");n.className="small chip-note lvmode-row";
+    n.innerHTML='<span id="lvModeLbl">Toon scholen met</span><div class="weight lvmode" role="group" aria-labelledby="lvModeLbl">'+
+      [["all","alle gekozen niveaus"],["any","minstens één ervan"]].map(([v,l])=>'<button type="button" aria-pressed="'+(f.levelMode===v)+'" data-lvmode="'+v+'">'+l+'</button>').join("")+'</div>';
+    n.querySelectorAll("[data-lvmode]").forEach(b=>b.onclick=()=>{f.levelMode=b.dataset.lvmode;renderAll()});
+    fl.appendChild(n);}
   chips(document.getElementById("fDist"),[10,15,20,30].map(m=>({key:m,label:"tot "+m+" min"})),k=>{f.maxMin=f.maxMin===k?null:k},k=>f.maxMin===k);
   const pool=S.filter(s=>(!s.type)||(s.type==="part"&&f.part)||(s.type==="int"&&f.int)||(s.type==="vso"&&f.vso));
   const rs=[...new Set(pool.map(s=>s.r))].sort();
@@ -1045,7 +1052,7 @@ document.getElementById("sort").onchange=e=>{f.sort=e.target.value;renderList()}
 document.getElementById("q").oninput=e=>{f.q=e.target.value;renderList()};
 ["tPart","tInt","tVso"].forEach((id,i)=>document.getElementById(id).onchange=e=>{f[["part","int","vso"][i]]=e.target.checked;renderAll()});
 document.getElementById("tHid").onchange=e=>{f.showHidden=e.target.checked;renderList()};
-document.getElementById("reset").onclick=()=>{f.showHidden=false;f.q="";f.maxMin=null;f.level.clear();f.richting.clear();f.aanpak.clear();f.part=f.int=f.vso=false;document.getElementById("q").value="";["tPart","tInt","tVso"].forEach(id=>document.getElementById(id).checked=false);renderAll()};
+document.getElementById("reset").onclick=()=>{f.showHidden=false;f.q="";f.maxMin=null;f.level.clear();f.levelMode="all";f.richting.clear();f.aanpak.clear();f.part=f.int=f.vso=false;document.getElementById("q").value="";["tPart","tInt","tVso"].forEach(id=>document.getElementById(id).checked=false);renderAll()};
 
 document.addEventListener("click",e=>{
   const b=e.target.closest("button"); if(!b)return;
