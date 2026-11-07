@@ -38,7 +38,7 @@
   --bg:#F5F5F5; --surface:#FFFFFF; --soft:#F1F1F1; --soft2:#EBEBEB; --panel:#E3E3E3; --chip:#E8ECF2; --accent:#FAE6E6;
   --primary:#CC0000; --on-primary:#FFFFFF; --count-on:#FFFFFF; --count-on-ink:#CC0000;
   --ink:#1A1A1A; --deep:#000000; --text:#333333; --muted:#595959; --subtle:#666666; --line:#E3E3E3; --line2:#B3B3B3;
-  --err:#CC0000; --warn-ink:#8A4A26; --warn-bg:#FBEFE8;
+  --rung:#1C4181; --err:#CC0000; --warn-ink:#8A4A26; --warn-bg:#FBEFE8;
   --header-bg:rgba(255,255,255,.96); --nav-bg:rgba(255,255,255,.97); --tray-bg:rgba(255,255,255,.97);
   --sh:0 1px 2px rgba(0,0,0,.06); --focus:#1C4181;
   --icon-search:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23595959' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
@@ -57,7 +57,7 @@
     --bg:#121212; --surface:#1C1C1C; --soft:#242424; --soft2:#2B2B2B; --panel:#333333; --chip:#26324A; --accent:#3A1D1A;
     --primary:#FF6B5E; --on-primary:#1A1A1A; --count-on:#1A1A1A; --count-on-ink:#FF6B5E;
     --ink:#F2F2F2; --deep:#FFFFFF; --text:#D9D9D9; --muted:#B3B3B3; --subtle:#A6A6A6; --line:#333333; --line2:#4D4D4D;
-    --err:#FF6B5E; --warn-ink:#FFB59A; --warn-bg:#3A2418;
+    --rung:#8FB3E0; --err:#FF6B5E; --warn-ink:#FFB59A; --warn-bg:#3A2418;
     --header-bg:rgba(28,28,28,.96); --nav-bg:rgba(28,28,28,.97); --tray-bg:rgba(28,28,28,.97);
     --sh:0 1px 2px rgba(0,0,0,.4); --focus:#8FB3E0; --on-red:#1A1A1A;
     --icon-search:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B3B3B3' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
@@ -71,7 +71,7 @@
   --bg:#121212; --surface:#1C1C1C; --soft:#242424; --soft2:#2B2B2B; --panel:#333333; --chip:#26324A; --accent:#3A1D1A;
   --primary:#FF6B5E; --on-primary:#1A1A1A; --count-on:#1A1A1A; --count-on-ink:#FF6B5E;
   --ink:#F2F2F2; --deep:#FFFFFF; --text:#D9D9D9; --muted:#B3B3B3; --subtle:#A6A6A6; --line:#333333; --line2:#4D4D4D;
-  --err:#FF6B5E; --warn-ink:#FFB59A; --warn-bg:#3A2418;
+  --rung:#8FB3E0; --err:#FF6B5E; --warn-ink:#FFB59A; --warn-bg:#3A2418;
   --header-bg:rgba(28,28,28,.96); --nav-bg:rgba(28,28,28,.97); --tray-bg:rgba(28,28,28,.97);
   --sh:0 1px 2px rgba(0,0,0,.4); --focus:#8FB3E0; --on-red:#1A1A1A;
   --icon-search:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B3B3B3' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
@@ -269,12 +269,13 @@ tbody tr:last-child td,tbody tr:last-child th{border-bottom:0}
 .x:hover{color:var(--err);text-decoration:underline}
 
 /* Niveauladder als pillen */
-.ladder{display:flex;flex-wrap:wrap;gap:4px}
-.rung{display:inline-flex}
-.rung i{display:none}
-.rung span{font-size:11px;font-weight:600;line-height:16px;padding:2px 8px;min-width:28px;text-align:center;border-radius:9999px;border:1px dashed var(--line2);color:var(--subtle)}
-.rung.has span{background:var(--chip);border-color:transparent;color:var(--ink)}
-.rung.has.match span{background:var(--primary);color:var(--on-primary)}
+.ladder{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:440px;margin:4px 0 2px}
+.rung{display:flex;flex-direction:column;gap:5px;align-items:stretch}
+.rung i{display:block;height:12px;border-radius:2px;background:var(--panel)}
+.rung.has i{background:var(--rung)}
+.rung.has.match i{background:var(--primary)}
+.rung span{font-size:12px;color:var(--subtle);text-align:center;line-height:1}
+.rung.has span{color:var(--ink);font-weight:700}
 
 /* ---- Afweging en shortlist ---- */
 .criteria{display:grid;gap:0;margin-bottom:32px;background:var(--surface);border-radius:12px;box-shadow:var(--sh);padding:8px 24px 20px}
@@ -433,6 +434,15 @@ footer .linkbtn,footer a.ext{color:var(--primary);font-weight:600;font-size:13px
 .cal-add{color:var(--primary);font-weight:600;white-space:nowrap;margin-left:4px}
 .lvmode-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .lvmode button{width:auto;padding:0 12px;font-size:13px}
+.hshare{order:3;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border:1px solid var(--line2);border-radius:8px;background:var(--surface);color:var(--ink);font-weight:600;font-size:15px;cursor:pointer;white-space:nowrap}
+.hshare:hover{background:var(--soft);border-color:var(--ink)}
+.hshare svg{width:18px;height:18px;flex:0 0 auto}
+@media (max-width:900px){.hshare{order:0}.topbar nav.tabs{order:1}}
+@media (max-width:600px){.hshare{height:36px;padding:0 12px;font-size:14px}}
+.sh-opt{display:flex;gap:12px;align-items:flex-start;background:var(--soft);border-radius:12px;padding:12px 14px;margin:0 0 14px;cursor:pointer;color:var(--text)}
+.modal .sh-opt input{width:20px;height:20px;margin:2px 0 0;flex:0 0 auto;accent-color:var(--primary)}
+#shNameBox label{display:block;margin-bottom:6px}
+#shNameBox[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -447,6 +457,7 @@ footer .linkbtn,footer a.ext{color:var(--primary);font-weight:600;font-size:13px
         <button class="tab" role="tab" data-view="weigh" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9l-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></svg><span class="tl">Mijn afweging</span><span class="ts">Afweging</span> <span class="count" id="sCount">0</span></button>
       </div>
     </nav>
+    <button class="hshare" id="headShare" type="button" title="Deel je shortlist, scores en notities via een link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></svg><span>Delen</span></button>
   </div>
 </header>
 
@@ -640,7 +651,8 @@ if(HOME)f.sort="dist";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 function ladder(s,match){
-  return '<div class="ladder" role="img" aria-label="Niveaus: '+esc(s.lv.length?s.lv.map(k=>LV.find(l=>l.k===k).full).join(", "):"apart traject")+'">'+
+  const mt=match?s.lv.filter(k=>match.has(k)).map(k=>LV.find(l=>l.k===k).full):[];
+  return '<div class="ladder" role="img" aria-label="Niveaus: '+esc(s.lv.length?s.lv.map(k=>LV.find(l=>l.k===k).full).join(", "):"apart traject")+(mt.length?esc("; past bij gekozen advies: "+mt.join(", ")):"")+'">'+
     LV.map(l=>{const has=s.lv.includes(l.k);return '<div class="rung'+(has?' has':'')+(has&&match&&match.has(l.k)?' match':'')+'" title="'+l.full+'"><i></i><span>'+l.l+'</span></div>'}).join("")+'</div>';
 }
 function chips(el,values,onClick,isOn){
@@ -684,11 +696,9 @@ function renderFilters(){
 }
 function card(s){
   const inC=st.compare.includes(s.id), inS=st.short.includes(s.id);
-  const lvl=s.lv.length?s.lv.map(k=>{const l=LV.find(x=>x.k===k).full;return f.level.has(k)?'<b>'+l+'</b>':l}).join(' \u2022 '):'Apart traject';
-  const mt=s.lv.filter(k=>f.level.has(k)).map(k=>LV.find(x=>x.k===k).full);
   return '<article class="school'+(inC?' picked':'')+'" data-id="'+s.id+'">'+
     '<div class="c-head"><div class="c-meta"><span class="pill-dark">'+esc(s.a)+'</span><span>'+esc(s.r)+'</span></div>'+
-    '<h3>'+esc(s.n)+'</h3><p class="lvline"><span class="sr-only">Niveaus: </span>'+lvl+(mt.length?'<span class="sr-only">; past bij gekozen advies: '+mt.join(', ')+'</span>':'')+'</p>'+
+    '<h3>'+esc(s.n)+'</h3>'+ladder(s,f.level)+
     '<div class="tags">'+(s.type?'<span class="tag warn">'+typeLabel(s.type)+'</span>':'')+s.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join("")+'</div></div>'+
     '<div class="c-body"><div class="cdata"><div class="cbike"><div><span class="lbl">Fietstijd vanaf thuis</span><small>'+esc(s.addr||'')+'</small></div>'+
     (s.min!=null?'<p class="bnum">'+s.min+'<small> min</small><span>ca. '+fmtKm(s.km)+' km</span></p>':'<p class="dist">'+distTxt(s)+'</p>')+'</div>'+examLine(s)+'</div>'+nextLine(s)+'</div>'+
@@ -740,10 +750,10 @@ function renderCompare(){
   const mins=cols.map(s=>s.min).filter(v=>v!=null), minBest=mins.length>1&&new Set(mins).size>1?Math.min(...mins):null;
   const scs=cols.map(s=>scoreOf(s.id).v).filter(v=>v!=null), scBest=scs.length>1&&new Set(scs).size>1?Math.max(...scs):null;
   const nTxt=cols.length+(cols.length===1?' school':' scholen');
-  el.innerHTML='<div class="vhead"><h2>Scholen vergelijken</h2><p class="sub">'+nTxt+' naast elkaar. Schuif horizontaal als de tabel breder is dan je scherm. Donker gemarkeerd is het advies dat je bij de filters hebt gekozen.</p></div><div class="scroll"><table><thead><tr><th class="mx"><span class="eyebrow-t">Vergelijking</span><b>'+nTxt+'</b></th>'+
+  el.innerHTML='<div class="vhead"><h2>Scholen vergelijken</h2><p class="sub">'+nTxt+' naast elkaar. Schuif horizontaal als de tabel breder is dan je scherm. Rood gemarkeerd is het advies dat je bij de filters hebt gekozen.</p></div><div class="scroll"><table><thead><tr><th class="mx"><span class="eyebrow-t">Vergelijking</span><b>'+nTxt+'</b></th>'+
     cols.map(s=>'<th scope="col"><div class="ch"><span class="chn">'+esc(s.n)+'</span><span class="cha">'+esc(s.addr||'')+'</span><button class="x" data-cmp="'+s.id+'">Verwijder</button></div></th>').join("")+'</tr></thead><tbody>'+
     grp("Onderwijs")+
-    row("Niveaus",s=>ladder(s,f.level)+'<div class="small" style="margin-top:6px">'+(s.lv.length?s.lv.map(k=>LV.find(l=>l.k===k).full).join(", "):"Apart traject")+'</div>','Donker = gekozen advies')+
+    row("Niveaus",s=>ladder(s,f.level)+'<div class="small" style="margin-top:6px">'+(s.lv.length?s.lv.map(k=>LV.find(l=>l.k===k).full).join(", "):"Apart traject")+'</div>','Rood = gekozen advies')+
     row("Richting",s=>esc(s.r))+
     row("Aanpak",s=>esc(s.a))+
     row("Soort",s=>typeLabel(s.type))+
@@ -1025,10 +1035,24 @@ function summaryText(){const ids=[...st.short].filter(id=>byId[id]).sort((a,b)=>
     const parts=[];if(sc)parts.push(sc.toFixed(1).replace(".",",")+"/5");if(s.min!=null)parts.push(s.min+" min fietsen");
     if(e){const lv=EXL.filter(k=>e[k]&&e[k].kand).slice(-2).map(k=>LVN[k]+" "+Math.round(pctOf(e[k]))+"%");if(lv.length)parts.push("geslaagd "+lv.join(", "));}
     return (i+1)+". "+s.n+(parts.length?" ("+parts.join(", ")+")":"")}).join("\n");}
-async function shareList(){const me=await askName();if(!me)return;
-  const url=location.origin+location.pathname+"#d="+await packShare(myPayload());
-  const text=summaryText()+"\n\nOpen mijn lijst via de link om hem met de jouwe samen te voegen.";
-  if(navigator.share){try{await navigator.share({title:"Shortlist middelbare scholen",text,url});return}catch(e){if(e.name==="AbortError")return}}
+function askShare(){return new Promise(res=>{const n=st.short.filter(id=>byId[id]).length;
+  const m=modal('<h3>Delen</h3><p>Stuur de app door, met of zonder jouw keuzes.</p>'+
+    '<label class="sh-opt"><input type="checkbox" id="shData"'+(n?' checked':'')+'><span><b>Mijn keuzes meesturen</b><br><span class="small">'+(n?n+(n===1?' school':' scholen')+' op je shortlist, met scores en notities. ':'Je shortlist is nog leeg. ')+'De gegevens zitten in de link zelf en gaan niet via een server; je partner kan ze met de eigen lijst samenvoegen.</span></span></label>'+
+    '<div id="shNameBox"><label class="small" for="meName">Je naam, zodat je partner ziet van wie elke score en notitie is</label><input id="meName" placeholder="Bijvoorbeeld Paul" maxlength="30" value="'+esc(st.me||"")+'"></div>'+
+    '<p class="small" id="shErr" role="alert" style="color:var(--err);margin:-4px 0 12px" hidden>Vul je naam in om je keuzes mee te sturen.</p>'+
+    '<div class="row"><button class="btn primary" id="shOk">Delen</button><button class="btn" id="shNo">Annuleren</button></div>');
+  const cb=m.querySelector("#shData"),box=m.querySelector("#shNameBox"),inp=m.querySelector("#meName"),err=m.querySelector("#shErr");
+  const sync=()=>{box.hidden=!cb.checked;err.hidden=true};cb.onchange=sync;sync();
+  const ok=()=>{if(!cb.checked){m.remove();return res({data:false})}
+    const v=inp.value.trim();if(!v){err.hidden=false;inp.focus();return}
+    st.me=v;save();m.remove();res({data:true})};
+  m.querySelector("#shOk").onclick=ok;inp.onkeydown=e=>{if(e.key==="Enter")ok()};m.querySelector("#shNo").onclick=()=>{m.remove();res(null)};
+  (cb.checked&&!inp.value?inp:m.querySelector("#shOk")).focus();});}
+async function shareList(){const ch=await askShare();if(!ch)return;
+  const base=location.origin+location.pathname;
+  const url=ch.data?base+"#d="+await packShare(myPayload()):base;
+  const text=ch.data?summaryText()+"\n\nOpen mijn lijst via de link om hem met de jouwe samen te voegen.":"Handig om de middelbare scholen in Utrecht te vergelijken: op niveau, fietstijd, examenresultaten en open dagen.";
+  if(navigator.share){try{await navigator.share({title:ch.data?"Shortlist middelbare scholen":"Middelbare scholen Utrecht vergelijken",text,url});return}catch(e){if(e.name==="AbortError")return}}
   const full=text+"\n"+url;
   try{await navigator.clipboard.writeText(full);modal('<h3>Gekopieerd</h3><p>Het bericht met de link staat op je klembord. Plak het in WhatsApp of een mail.</p><div class="row"><button class="btn primary" onclick="this.closest(\'.modal\').remove()">Oké</button></div>')}
   catch(e){const m=modal('<h3>Kopieer dit bericht</h3><textarea style="min-height:160px">'+esc(full)+'</textarea><div class="row" style="margin-top:8px"><button class="btn primary" onclick="this.closest(\'.modal\').remove()">Sluiten</button></div>');m.querySelector("textarea").select();}}
@@ -1072,6 +1096,7 @@ document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.view))
 document.getElementById("trayGo").onclick=()=>show("compare");
 document.getElementById("expBtn").onclick=exportData;
 document.getElementById("footShare").onclick=shareList;
+document.getElementById("headShare").onclick=shareList;
 document.getElementById("impFile").onchange=e=>{if(e.target.files[0])importData(e.target.files[0]);e.target.value=""};
 document.getElementById("sort").onchange=e=>{f.sort=e.target.value;renderList()};
 document.getElementById("q").oninput=e=>{f.q=e.target.value;renderList()};
