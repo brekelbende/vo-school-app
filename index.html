@@ -10,16 +10,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#E2FFFE; --surface:#FFFFFF; --soft:#D9FAF9; --soft2:#D3F4F4; --panel:#CEEFEE; --chip:#C0E8DD; --accent:#B3EDEC;
-  --primary:#0D4E4E; --on-primary:#FFFFFF; --count-on:#B3EDEC; --count-on-ink:#002020;
-  --ink:#003636; --deep:#002020; --text:#404848; --muted:#41655D; --subtle:#646D6C; --line:#CEEFEE; --line2:#BFC8C8;
-  --err:#BA1A1A; --warn-ink:#7F2904; --warn-bg:#FFDBCF;
-  --header-bg:rgba(255,255,255,.9); --nav-bg:rgba(255,255,255,.95); --tray-bg:rgba(255,255,255,.95);
-  --sh:0 1px 2px rgba(0,0,0,.05); --focus:#0D4E4E;
-  --icon-search:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2341655D' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
-  --icon-empty:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003636' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 4l9 6.5'/%3E%3Cpath d='M5 9.5V20h14V9.5'/%3E%3Cpath d='M10 20v-5h4v5'/%3E%3C/svg%3E");
-  --icon-info:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003636' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v6M12 7.5v.01'/%3E%3C/svg%3E");
-  --icon-cal:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2341655D' stroke-width='2' stroke-linecap='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M16 3v4M8 3v4M3 10h18'/%3E%3C/svg%3E");
+  --bg:#F5F5F5; --surface:#FFFFFF; --soft:#F1F1F1; --soft2:#EBEBEB; --panel:#E3E3E3; --chip:#E8ECF2; --accent:#FAE6E6;
+  --primary:#CC0000; --on-primary:#FFFFFF; --count-on:#FFFFFF; --count-on-ink:#CC0000;
+  --ink:#1A1A1A; --deep:#000000; --text:#333333; --muted:#595959; --subtle:#666666; --line:#E3E3E3; --line2:#B3B3B3;
+  --err:#CC0000; --warn-ink:#8A4A26; --warn-bg:#FBEFE8;
+  --header-bg:rgba(255,255,255,.96); --nav-bg:rgba(255,255,255,.97); --tray-bg:rgba(255,255,255,.97);
+  --sh:0 1px 2px rgba(0,0,0,.06); --focus:#1C4181;
+  --icon-search:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23595959' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+  --icon-empty:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231A1A1A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 4l9 6.5'/%3E%3Cpath d='M5 9.5V20h14V9.5'/%3E%3Cpath d='M10 20v-5h4v5'/%3E%3C/svg%3E");
+  --icon-info:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231A1A1A' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v6M12 7.5v.01'/%3E%3C/svg%3E");
+  --icon-cal:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23595959' stroke-width='2' stroke-linecap='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M16 3v4M8 3v4M3 10h18'/%3E%3C/svg%3E");
   /* oude namen, voor inline stijlen in de render-functies */
   --paper:var(--bg); --card:var(--surface); --canal:var(--primary); --canal-soft:var(--soft2); --red:var(--err); --on-red:#FFFFFF;
   --font:"Noto Sans", Arial, Helvetica, sans-serif;
@@ -29,30 +29,30 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0B1F1F; --surface:#102A2A; --soft:#163636; --soft2:#1B3D3D; --panel:#1F4545; --chip:#22493F; --accent:#2B5A5A;
-    --primary:#85BEBD; --on-primary:#002020; --count-on:#0D4E4E; --count-on-ink:#E2FFFE;
-    --ink:#D9FAF9; --deep:#ECFFFE; --text:#C2D4D1; --muted:#9CC9C1; --subtle:#93ADA9; --line:#1F4545; --line2:#2E5757;
-    --err:#FFB4AB; --warn-ink:#FFB59A; --warn-bg:#5B1900;
-    --header-bg:rgba(16,42,42,.9); --nav-bg:rgba(16,42,42,.96); --tray-bg:rgba(16,42,42,.96);
-    --sh:0 1px 2px rgba(0,0,0,.4); --focus:#85BEBD; --on-red:#002020;
-    --icon-search:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239CC9C1' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
-    --icon-empty:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D9FAF9' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 4l9 6.5'/%3E%3Cpath d='M5 9.5V20h14V9.5'/%3E%3Cpath d='M10 20v-5h4v5'/%3E%3C/svg%3E");
-    --icon-info:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D9FAF9' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v6M12 7.5v.01'/%3E%3C/svg%3E");
-    --icon-cal:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239CC9C1' stroke-width='2' stroke-linecap='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M16 3v4M8 3v4M3 10h18'/%3E%3C/svg%3E");
+    --bg:#121212; --surface:#1C1C1C; --soft:#242424; --soft2:#2B2B2B; --panel:#333333; --chip:#26324A; --accent:#3A1D1A;
+    --primary:#FF6B5E; --on-primary:#1A1A1A; --count-on:#1A1A1A; --count-on-ink:#FF6B5E;
+    --ink:#F2F2F2; --deep:#FFFFFF; --text:#D9D9D9; --muted:#B3B3B3; --subtle:#A6A6A6; --line:#333333; --line2:#4D4D4D;
+    --err:#FF6B5E; --warn-ink:#FFB59A; --warn-bg:#3A2418;
+    --header-bg:rgba(28,28,28,.96); --nav-bg:rgba(28,28,28,.97); --tray-bg:rgba(28,28,28,.97);
+    --sh:0 1px 2px rgba(0,0,0,.4); --focus:#8FB3E0; --on-red:#1A1A1A;
+    --icon-search:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B3B3B3' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+    --icon-empty:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F2F2F2' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 4l9 6.5'/%3E%3Cpath d='M5 9.5V20h14V9.5'/%3E%3Cpath d='M10 20v-5h4v5'/%3E%3C/svg%3E");
+    --icon-info:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F2F2F2' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v6M12 7.5v.01'/%3E%3C/svg%3E");
+    --icon-cal:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B3B3B3' stroke-width='2' stroke-linecap='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M16 3v4M8 3v4M3 10h18'/%3E%3C/svg%3E");
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0B1F1F; --surface:#102A2A; --soft:#163636; --soft2:#1B3D3D; --panel:#1F4545; --chip:#22493F; --accent:#2B5A5A;
-  --primary:#85BEBD; --on-primary:#002020; --count-on:#0D4E4E; --count-on-ink:#E2FFFE;
-  --ink:#D9FAF9; --deep:#ECFFFE; --text:#C2D4D1; --muted:#9CC9C1; --subtle:#93ADA9; --line:#1F4545; --line2:#2E5757;
-  --err:#FFB4AB; --warn-ink:#FFB59A; --warn-bg:#5B1900;
-  --header-bg:rgba(16,42,42,.9); --nav-bg:rgba(16,42,42,.96); --tray-bg:rgba(16,42,42,.96);
-  --sh:0 1px 2px rgba(0,0,0,.4); --focus:#85BEBD; --on-red:#002020;
-  --icon-search:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239CC9C1' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
-  --icon-empty:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D9FAF9' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 4l9 6.5'/%3E%3Cpath d='M5 9.5V20h14V9.5'/%3E%3Cpath d='M10 20v-5h4v5'/%3E%3C/svg%3E");
-  --icon-info:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D9FAF9' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v6M12 7.5v.01'/%3E%3C/svg%3E");
-  --icon-cal:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239CC9C1' stroke-width='2' stroke-linecap='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M16 3v4M8 3v4M3 10h18'/%3E%3C/svg%3E");
+  --bg:#121212; --surface:#1C1C1C; --soft:#242424; --soft2:#2B2B2B; --panel:#333333; --chip:#26324A; --accent:#3A1D1A;
+  --primary:#FF6B5E; --on-primary:#1A1A1A; --count-on:#1A1A1A; --count-on-ink:#FF6B5E;
+  --ink:#F2F2F2; --deep:#FFFFFF; --text:#D9D9D9; --muted:#B3B3B3; --subtle:#A6A6A6; --line:#333333; --line2:#4D4D4D;
+  --err:#FF6B5E; --warn-ink:#FFB59A; --warn-bg:#3A2418;
+  --header-bg:rgba(28,28,28,.96); --nav-bg:rgba(28,28,28,.97); --tray-bg:rgba(28,28,28,.97);
+  --sh:0 1px 2px rgba(0,0,0,.4); --focus:#8FB3E0; --on-red:#1A1A1A;
+  --icon-search:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B3B3B3' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+  --icon-empty:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F2F2F2' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.5 12 4l9 6.5'/%3E%3Cpath d='M5 9.5V20h14V9.5'/%3E%3Cpath d='M10 20v-5h4v5'/%3E%3C/svg%3E");
+  --icon-info:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F2F2F2' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v6M12 7.5v.01'/%3E%3C/svg%3E");
+  --icon-cal:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B3B3B3' stroke-width='2' stroke-linecap='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M16 3v4M8 3v4M3 10h18'/%3E%3C/svg%3E");
   color-scheme: dark;
 }
 *,*::before,*::after{box-sizing:inherit}
@@ -66,11 +66,11 @@ button,input,textarea,select{font:inherit;color:inherit}
 h1,h2,h3,h4{color:var(--ink)}
 
 /* ---- Kopbalk met navigatie ---- */
-.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;background:var(--header-bg);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:0 1px 8px rgba(0,0,0,.04)}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;border-top:4px solid var(--primary);background:var(--header-bg);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:0 1px 8px rgba(0,0,0,.04)}
 .topbar>.wrap{display:flex;align-items:center;justify-content:space-between;gap:8px 24px;min-height:80px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
 .brand-t{margin:0;font-weight:600;font-size:18px;line-height:1.35;color:var(--ink);letter-spacing:-.1px}
 .brand-s{margin:2px 0 0;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.2px;line-height:1.3}
-.brand-s::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink);flex:0 0 auto}
+.brand-s::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--primary);flex:0 0 auto}
 .tablist{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 .tab{background:none;border:0;border-radius:8px;padding:8px 16px;font-weight:600;font-size:15px;line-height:24px;color:var(--text);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
 .tab:hover{background:var(--soft2);color:var(--ink)}
@@ -170,7 +170,7 @@ input[type=checkbox]{accent-color:var(--primary);width:16px;height:16px}
 .school.flash{outline:3px solid var(--primary);outline-offset:3px}
 .c-head{padding:24px 24px 16px;background:linear-gradient(180deg,var(--bg),var(--surface))}
 .c-meta{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:12px;font-weight:500;color:var(--muted)}
-.pill-dark{background:var(--primary);color:var(--on-primary);font-size:11px;font-weight:600;padding:2px 9px;border-radius:9999px;letter-spacing:.2px}
+.pill-dark{background:var(--ink);color:var(--surface);font-size:11px;font-weight:600;padding:2px 9px;border-radius:9999px;letter-spacing:.2px}
 .school h3{font-size:24px;font-weight:700;line-height:1.2;letter-spacing:-.5px;margin:10px 0 4px;overflow-wrap:anywhere}
 .lvline{margin:0;font-size:14px;color:var(--text)}
 .lvline b{color:var(--ink);font-weight:700}
@@ -311,13 +311,13 @@ textarea{width:100%;min-height:72px;border:0;border-radius:8px;padding:10px 12px
 #v-agenda>.frow{margin-bottom:8px}
 
 /* ---- Vergelijkbalk ---- */
-.tray{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:12;max-width:720px;margin:0 auto;background:var(--tray-bg);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--ink);border-radius:12px;box-shadow:0 8px 30px rgba(0,32,32,.18);padding:12px 12px 12px 20px;font-weight:600}
+.tray{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:12;max-width:720px;margin:0 auto;background:var(--tray-bg);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--ink);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.18);padding:12px 12px 12px 20px;font-weight:600}
 .tray .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0;max-width:none}
 .tray .btn{background:var(--primary);color:var(--on-primary)}
 
 /* ---- Modals en foutbalk ---- */
-.modal{position:fixed;inset:0;z-index:40;background:rgba(0,32,32,.45);display:flex;align-items:center;justify-content:center;padding:16px}
-.modal>div{background:var(--surface);color:var(--text);border-radius:16px;max-width:480px;width:100%;padding:28px;box-shadow:0 10px 40px rgba(0,32,32,.25)}
+.modal{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal>div{background:var(--surface);color:var(--text);border-radius:16px;max-width:480px;width:100%;padding:28px;box-shadow:0 10px 40px rgba(0,0,0,.25)}
 .modal h3{margin:0 0 8px;font-size:20px;font-weight:700;letter-spacing:-.2px}
 .modal p{margin:0 0 12px;color:var(--text)}
 .modal p b{color:var(--ink)}
@@ -391,12 +391,27 @@ footer .linkbtn,footer a.ext{color:var(--primary);font-weight:600;font-size:13px
   footer.wrap{padding:24px 16px 32px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Domtoren: merkteken in de kopbalk en decoratie in de hero */
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{flex:0 0 auto;width:14px;height:44px;color:var(--primary);display:block}
+.brand-mark svg,.hero-dom svg{width:100%;height:100%;display:block}
+.hero{position:relative}
+.hero>*:not(.hero-dom){position:relative;z-index:1}
+.hero-dom{display:none}
+@media (min-width:900px){.hero-dom{display:block;position:absolute;right:40px;bottom:-24px;width:66px;height:220px;color:var(--line);pointer-events:none;z-index:0}}
+@media (max-width:600px){.brand-mark{width:11px;height:34px}}
+
+.next-line a{color:inherit;text-decoration:none}
+.next-line a:hover .cal-add,.next-line a:focus-visible .cal-add{text-decoration:underline}
+.next-line a:hover b{text-decoration:underline}
+.cal-add{color:var(--primary);font-weight:600;white-space:nowrap;margin-left:4px}
 </style>
 </head>
 <body>
 <header class="topbar">
   <div class="wrap">
-    <div class="brand"><p class="brand-t">Schoolkeuzegids Utrecht</p><p class="brand-s">Onafhankelijk &amp; privacy-veilig (geen account nodig)</p></div>
+    <div class="brand"><span class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 100" fill="currentColor" fill-rule="evenodd" aria-hidden="true" focusable="false"><path d="M14.5 0h1v4h-1z M13 14.5 15 4l2 10.5z M6 100V56H5v-2h2.5V34H7v-2h3V17l2-2.5h6l2 2.5v15h3v2h-.5v20H25v2h-1v44z M7.5 32 8.25 27.5 9 32z M21 32l.75-4.5.75 4.5z M12 100v-9a3 3 0 0 1 6 0v9z M9 82V67a2 2 0 0 1 4 0v15z M17 82V67a2 2 0 0 1 4 0v15z M10 51V41a1.75 1.75 0 0 1 3.5 0v10z M16.5 51V41a1.75 1.75 0 0 1 3.5 0v10z M13.75 29v-8a1.25 1.25 0 0 1 2.5 0v8z"/></svg></span><div><p class="brand-t">Schoolkeuzegids Utrecht</p><p class="brand-s">Onafhankelijk &amp; privacy-veilig (geen account nodig)</p></div></div>
     <nav class="tabs" aria-label="Weergave">
       <div class="tablist" role="tablist">
         <button class="tab" role="tab" data-view="list" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span class="tl">Alle scholen</span><span class="ts">Scholen</span></button>
@@ -411,6 +426,7 @@ footer .linkbtn,footer a.ext{color:var(--primary);font-weight:600;font-size:13px
 <main class="wrap">
   <section class="view" id="v-list">
     <div class="hero">
+      <span class="hero-dom"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 100" fill="currentColor" fill-rule="evenodd" aria-hidden="true" focusable="false"><path d="M14.5 0h1v4h-1z M13 14.5 15 4l2 10.5z M6 100V56H5v-2h2.5V34H7v-2h3V17l2-2.5h6l2 2.5v15h3v2h-.5v20H25v2h-1v44z M7.5 32 8.25 27.5 9 32z M21 32l.75-4.5.75 4.5z M12 100v-9a3 3 0 0 1 6 0v9z M9 82V67a2 2 0 0 1 4 0v15z M17 82V67a2 2 0 0 1 4 0v15z M10 51V41a1.75 1.75 0 0 1 3.5 0v10z M16.5 51V41a1.75 1.75 0 0 1 3.5 0v10z M13.75 29v-8a1.25 1.25 0 0 1 2.5 0v8z"/></svg></span>
       <p class="eyebrow">Van een ouder, voor ouders &middot; Utrecht en omgeving</p>
       <h1>Middelbare scholen in Utrecht</h1>
       <p class="lead">Filter op het advies van je kind en de fietstijd vanaf je huis, zet scholen naast elkaar en weeg ze op wat voor jullie telt.</p>
@@ -875,7 +891,7 @@ const DOW=["zo","ma","di","wo","do","vr","za"],MON=["jan","feb","mrt","apr","mei
 const pd=iso=>{const[y,m,d]=iso.split("-").map(Number);return new Date(y,m-1,d)};
 const fmtDate=iso=>{const d=pd(iso);return DOW[d.getDay()]+" "+d.getDate()+" "+MON[d.getMonth()]+(d.getFullYear()!==new Date().getFullYear()?" "+d.getFullYear():"")};
 function nextLine(s){const u=upcoming(s);if(!u.length)return "";const e=u.find(x=>x.big)||u[0];
-  return '<p class="next-line">'+(e.d===todayISO?'<b class="pct-low">Vandaag</b>: ':'Volgende open activiteit: <b>'+fmtDate(e.d)+'</b>, ')+esc(e.t)+(e.a?' '+e.a+(e.b?'–'+e.b:''):'')+'</p>';}
+  return '<p class="next-line"><a href="'+gcal(e)+'" target="_blank" rel="noopener" title="Zet in Google Agenda">'+(e.d===todayISO?'<b class="pct-low">Vandaag</b>: ':'Volgende open activiteit: <b>'+fmtDate(e.d)+'</b>, ')+esc(e.t)+(e.a?' '+e.a+(e.b?'–'+e.b:''):'')+' <span class="cal-add">In agenda</span></a></p>';}
 function gcal(e){const s=byId[e.id];const D=e.d.replace(/-/g,"");let dates;
   if(e.a){const t1=e.a.replace(":","")+"00",t2=(e.b||e.a).replace(":","")+"00";dates=D+"T"+t1+"/"+D+"T"+(e.b?t2:String(+e.a.slice(0,2)+2).padStart(2,"0")+e.a.slice(3)+"00");}
   else{const n=pd(e.d);n.setDate(n.getDate()+1);dates=D+"/"+n.getFullYear()+String(n.getMonth()+1).padStart(2,"0")+String(n.getDate()).padStart(2,"0");}
