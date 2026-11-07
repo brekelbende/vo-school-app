@@ -12,10 +12,10 @@ Werkt de app niet goed (bijvoorbeeld door oude opgeslagen gegevens)? Met "Alles 
 
 ## Bronnen
 
-- Examencijfers: DUO Open Onderwijsdata, geslaagden, gezakten en examencijfers 2024-2025 (CC-BY 4.0)
-- Schoollijst: Scholen op de kaart en De VO Gids
+- Examencijfers: DUO Open Onderwijsdata, geslaagden, gezakten en examencijfers 2024-2025 (CC-BY 4.0), vestigingen in de gemeenten Utrecht, Zeist, Houten, Nieuwegein, IJsselstein, De Bilt en Stichtse Vecht
+- Schoollijst: Scholen op de kaart en De VO Gids (scholen binnen 10 km, november 2026)
 - Websites van de scholen: eigen opzoekwerk (november 2026)
-- Adressen scholen: Google Maps; eigen adres: PDOK Locatieserver
+- Adressen scholen: Google Maps en PDOK Locatieserver; eigen adres: PDOK Locatieserver
 - Open dagen: websites van de scholen, aangevuld met de Open Dagen Planner van De VO Gids (november 2026)
 
 Niveaus en kenmerken zijn een startpunt, geen officiële registratie.
